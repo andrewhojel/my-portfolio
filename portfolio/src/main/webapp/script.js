@@ -29,3 +29,47 @@ function addRandomFact() {
   const factContainer = document.getElementById('fact-container');
   factContainer.innerText = fact;
 }
+
+let i = 0;
+let j = 0;
+
+const PHRASES = ["software engineer 🖥️", "designer 🎨", "product manager 💼", 
+               "photographer 📷", "proud Mexican 🇲🇽", "entrepreneur 📈"];
+const RATE = 100;
+const PAUSE = 1000;
+
+/**
+ * Fills in the 'I am a' sentences with different phrases
+ */
+function writeSnippets() {
+    if (i == 0) document.getElementById("text").innerHTML = "I am a ";
+	if (i < PHRASES[j].length) {
+        console.log(i)
+        document.getElementById("text").innerHTML += PHRASES[j].charAt(i);
+		i++;
+		setTimeout(writeSnippets, RATE);
+	} else {
+		i = 0;
+        (j + 1) < PHRASES.length ? j++ : j = 0;
+		setTimeout(writeSnippets, PAUSE);
+	}
+}
+
+// function writeSnippet(idx) {
+//     let curSnippet = PHRASES[idx]
+//     console.log(curSnippet)
+//     if (j < curSnippet.length) {
+//         console.log(j)
+// 		document.getElementById("text").innerHTML += curSnippet.charAt(j);
+// 		j++;
+// 		setTimeout(writeSnippet(idx), RATE);
+// 	}
+// 	else {
+// 		document.getElementById("text").innerHTML = "";
+// 		j = 0;
+// 	}
+// }
+
+// $(document).ready(function() {
+//     type();
+// })

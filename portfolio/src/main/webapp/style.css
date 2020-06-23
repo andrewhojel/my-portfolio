@@ -11,3 +11,7 @@
 .roboto-font {
     font-family: 'Roboto Mono', monospace;
 }
+
+#profile {
+    height: 250px;
+}
