@@ -1,8 +1,3 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
-}
 
 #fact-container {
   margin-top: 20px;
@@ -27,4 +22,18 @@
 .icon {
     color: black;
     padding: 0% 5% 0% 5%;
+}
+
+
+#content {
+    margin-left: auto;
+    margin-right: auto;
+    width: 650px;
+}
+
+/* make it scale on mobile :) */
+@media (max-width: 650px) {
+    #content {
+        width: 100%;
+    }
 }
