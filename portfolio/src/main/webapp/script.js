@@ -16,18 +16,18 @@
  * Adds a random fact to the page.
  */
 function addRandomFact() {
-  const facts =
-      ['🏙️: I am from Mexico City (capital of Mexico)', '🏎️: I am an avid Formula 1 fan',
-       '🏫: I graduated from highschool a year early', 
-       '🎓: I was at Stanford for a year with both of my older siblings',
-       '🚣‍♂️: I was a competitive rower in high school'];
+	const facts =
+		['🏙️: I am from Mexico City (capital of Mexico)', '🏎️: I am an avid Formula 1 fan',
+		'🏫: I graduated from highschool a year early', 
+		'🎓: I was at Stanford for a year with both of my older siblings',
+		'🚣‍♂️: I was a competitive rower in high school'];
 
-  // Pick a random fact.
-  const fact = facts[Math.floor(Math.random() * facts.length)];
+	// Pick a random fact.
+	const fact = facts[Math.floor(Math.random() * facts.length)];
 
-  // Add the fact tp the stage.
-  const factContainer = document.getElementById('fact-container');
-  factContainer.innerText = fact;
+	// Add the fact tp the stage.
+	const factContainer = document.getElementById('fact-container');
+	factContainer.innerText = fact;
 }
 
 let i = 0;
@@ -44,13 +44,45 @@ const PAUSE = 1000;
  */
 function writeSnippets() {
     if (i == 0) document.getElementById("text").innerHTML = EMOJIS[j] + " I am a ";
+
+	// Use typing effect to print PHRASE[j]
 	if (i < PHRASES[j].length) {
         document.getElementById("text").innerHTML += PHRASES[j].charAt(i);
 		i++;
 		setTimeout(writeSnippets, RATE);
-	} else {
+	} 
+	
+	// Go to next phrase after entire phrase has been printer
+	else {
 		i = 0;
         (j + 1) < PHRASES.length ? j++ : j = 0;
 		setTimeout(writeSnippets, PAUSE);
 	}
+}
+
+/**
+ * The JS necessary for the tabs function to work 
+ */
+function openCity(evt, sectionName) {
+	var i, tabcontent, tablinks;
+	tabcontent = document.getElementsByClassName("tabcontent");
+	for (i = 0; i < tabcontent.length; i++) {
+		tabcontent[i].style.display = "none";
+	}
+	tablinks = document.getElementsByClassName("tablinks");
+	for (i = 0; i < tablinks.length; i++) {
+		tablinks[i].className = tablinks[i].className.replace(" active", "");
+	}
+	document.getElementById(sectionName).style.display = "block";
+	evt.currentTarget.className += " active";
+}
+
+/**
+ * Init function to perform certain tasks onload
+ */
+window.addEventListener("load", myInit, true); 
+
+function myInit(){
+    document.getElementById("defaultOpen").click();
+    writeSnippets();
 }
