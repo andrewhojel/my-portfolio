@@ -44,7 +44,6 @@ const PAUSE = 1000;
 function writeSnippets() {
     if (i == 0) document.getElementById("text").innerHTML = "I am a ";
 	if (i < PHRASES[j].length) {
-        console.log(i)
         document.getElementById("text").innerHTML += PHRASES[j].charAt(i);
 		i++;
 		setTimeout(writeSnippets, RATE);

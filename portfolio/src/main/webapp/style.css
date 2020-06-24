@@ -11,7 +11,7 @@
     height: 250px;
 }
 
-.footer {
+#footer {
    position: fixed;
    left: 0;
    bottom: 0;
@@ -20,9 +20,15 @@
    background-color: white;
 }
 
+#footer_compensation {
+    height:50px;
+    background-color: white;
+    width: 100%;
+}
+
 .icon {
     color: black;
-    padding: 25px 50px 25px 50px;
+    padding: 25px 25px 25px;
 }
 
 
@@ -33,19 +39,19 @@
 }
 
 .experience {
-	padding: 20px 0 20px;
+	padding: 10px 0 10px 0;
 	max-width: 650px;
 	
 }
 .experience_image {
     display: inline-block;
     vertical-align: top;
-    width: 20%;
-    margin: 20px 30px 0 0;
+    width: 75px;
+    margin: 25px 25px 0 0;
 }
 .experience_text {
     display: inline-block;
-    width: 70%;
+    width: 525px;
 }
 
 /* make it scale on mobile :) */
@@ -57,8 +63,8 @@
         width: 100%;
     }
     .experience_image {
-        width: 70%;
+        width: 50%;
         margin-left: auto;
-    margin-right: auto;
+        margin-right: auto;
     }
 }
