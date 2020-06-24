@@ -33,8 +33,8 @@ function addRandomFact() {
 let i = 0;
 let j = 0;
 
-const PHRASES = ["software engineer", "designer", "product manager", 
-               "photographer", "proud Mexican", "entrepreneur"];
+const PHRASES = ["a software engineer", "a designer", "a product manager", 
+               "a photographer", "a proud Mexican", "an entrepreneur"];
 const EMOJIS = ["🖥️", "🎨", "💼", "📷", "🇲🇽", "📈"];
 const RATE = 100;
 const PAUSE = 1000;
@@ -43,7 +43,7 @@ const PAUSE = 1000;
  * Fills in the 'I am a' sentences with different phrases
  */
 function writeSnippets() {
-    if (i == 0) document.getElementById("snippetsTarget").innerHTML = EMOJIS[j] + " I am a ";
+    if (i == 0) document.getElementById("snippetsTarget").innerHTML = EMOJIS[j] + " I am ";
 
 	// Use typing effect to print PHRASE[j]
 	if (i < PHRASES[j].length) {

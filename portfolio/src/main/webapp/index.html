@@ -2,7 +2,7 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Andrew Hojel's Porfolio</title>
+        <title>Andrew Hojel</title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
         <link rel="stylesheet" href="style.css">
@@ -15,7 +15,8 @@
             <!-- Profile & Introduction Section -->
             <img id="profile" src="images/profile_picture.jpg" alt=""/>
             <h1>👋 Hi, I am Andrew Hojel</h1>
-            <h3 id="snippetsTarget" >I am a </h3>
+            <!-- make this into h2 so it is more accessible! -->
+            <h3 id="snippetsTarget" >I am </h3>
             <p>
                 Hi! I am a rising junior at Stanford Univeristy studying Computer 
                 with a focus on Artificial Intelligence. My academic path furthers
@@ -31,6 +32,7 @@
 
             <!-- Experience Section -->
             <div id="Experience" class="tabcontent">
+                <h4 class="experience_header">Current Positions</h4>
                 <div class="experience">
                     <a href="https://about.google/" target="_blank"><img class="experience_image" src="images/google_logo.png" alt="Google"/></a>
                     <div class="experience_text">
@@ -63,7 +65,7 @@
                 <div class="experience">
                     <a href="https://stanfordconsulting.stanford.edu/" target="_blank"><img class="experience_image" src="images/sc_logo.png" alt="Stanford Consulting"/></a>
                     <div class="experience_text">
-                        <p><strong>VP of Marketing & Data Management</strong> @ Stanford Consulting</p>
+                        <p><strong>VP of Marketing & Data Assets</strong> @ Stanford Consulting</p>
                         <p> 
                             Manage and organize all data assets of Stanford Consulting to maximize
                             efficiency and in process of developing new website. Previously held the 
@@ -82,6 +84,7 @@
                         </p>
                     </div>
                 </div>
+                <h4 class="experience_header">Past Positions</h4>
                 <div class="experience">
                     <a href="https://www.phenomyx.com/" target="_blank"><img class="experience_image" src="images/snapp_logo1.png" alt="Phenomyx"/></a>
                     <div class="experience_text">
@@ -158,7 +161,7 @@
 
       <!--
       <p>Click here to get a random fact about me:</p>
-      <button onclick="addRandomFact()">Hello</button>
+      <button onclick="addRandomFact()">Random Fact About Me!</button>
       -->
 
       <div id="fact-container"></div>

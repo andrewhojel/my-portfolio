@@ -82,6 +82,11 @@ body {
     width: 650px;
 }
 
+/* Style for experience headers */
+.experience_header {
+    margin-bottom: -0.5em;
+}
+
 /* Style / formatting for experience container */
 .experience {
 	padding: 10px 0 10px 0;
