@@ -25,7 +25,7 @@ function addRandomFact() {
 	// Pick a random fact.
 	const fact = facts[Math.floor(Math.random() * facts.length)];
 
-	// Add the fact tp the stage.
+	// Add the fact to the stage.
 	const factContainer = document.getElementById('fact-container');
 	factContainer.innerText = fact;
 }
@@ -43,15 +43,15 @@ const PAUSE = 1000;
  * Fills in the 'I am a' sentences with different phrases
  */
 function writeSnippets() {
-    if (i == 0) document.getElementById("text").innerHTML = EMOJIS[j] + " I am a ";
+    if (i == 0) document.getElementById("snippetsTarget").innerHTML = EMOJIS[j] + " I am a ";
 
 	// Use typing effect to print PHRASE[j]
 	if (i < PHRASES[j].length) {
-        document.getElementById("text").innerHTML += PHRASES[j].charAt(i);
+        document.getElementById("snippetsTarget").innerHTML += PHRASES[j].charAt(i);
 		i++;
 		setTimeout(writeSnippets, RATE);
 	} 
-	
+
 	// Go to next phrase after entire phrase has been printer
 	else {
 		i = 0;
