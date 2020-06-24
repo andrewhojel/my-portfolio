@@ -1,9 +1,127 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
+/* Style the tab */
+.tab {
+    overflow: hidden;
 }
 
-#greeting-container {
-  margin-top: 20px;
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;
+    font-size: 1.17em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0 10% 0 0;
+    transition: 0.3s;
+    font-family: 'Roboto Mono', monospace;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    text-decoration:underline;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    text-decoration:underline;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+}
+
+/* Style random facts container */
+#fact-container {
+    margin-top: 20px;
+}
+
+/* Set website font */
+body { 
+    font-family: 'Roboto Mono', monospace; 
+}
+
+/* Style the profile picture*/
+#profile {
+    height: 250px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Style / formatting fixed footer */
+#footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    background-color: white;
+}
+
+/* Ensures that all content is viewable */
+#footer_compensation {
+    height:50px;
+    background-color: white;
+    width: 100%;
+}
+
+/* Style for social icons */
+.icon {
+    color: black;
+    padding: 25px 50px 25px;
+}
+
+/* Style for entire webpage */
+#content {
+    margin-left: auto;
+    margin-right: auto;
+    width: 650px;
+}
+
+/* Style for experience headers */
+.experience_header {
+    margin-bottom: -0.5em;
+}
+
+/* Style / formatting for experience container */
+.experience {
+	padding: 10px 0 10px 0;
+	max-width: 650px;
+	
+}
+
+/* Style for image for each experience */
+.experience_image {
+    display: inline-block;
+    vertical-align: top;
+    width: 75px;
+    margin: 25px 25px 0 0;
+}
+
+/* Style for text for each experience */
+.experience_text {
+    display: inline-block;
+    width: 525px;
+}
+
+/* Make it scale on mobile :) */
+@media (max-width: 650px) {
+    .icon {
+        color: black;
+        padding: 25px 15px 25px;
+    }
+    #content {
+        width: 100%;
+    }
+    .experience_text {
+        width: 100%;
+    }
+    .experience_image {
+        margin: 0 auto;
+        width: 25%;
+    }
 }
