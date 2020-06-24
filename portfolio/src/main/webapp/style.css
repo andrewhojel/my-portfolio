@@ -3,9 +3,12 @@
   margin-top: 20px;
 }
 
-.roboto-font {
+body { font-family: 'Roboto Mono', monospace; }
+
+/* .roboto-font {
     font-family: 'Roboto Mono', monospace;
-}
+    color:black;
+} */
 
 #profile {
     height: 250px;
