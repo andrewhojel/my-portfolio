@@ -53,22 +53,3 @@ function writeSnippets() {
 		setTimeout(writeSnippets, PAUSE);
 	}
 }
-
-// function writeSnippet(idx) {
-//     let curSnippet = PHRASES[idx]
-//     console.log(curSnippet)
-//     if (j < curSnippet.length) {
-//         console.log(j)
-// 		document.getElementById("text").innerHTML += curSnippet.charAt(j);
-// 		j++;
-// 		setTimeout(writeSnippet(idx), RATE);
-// 	}
-// 	else {
-// 		document.getElementById("text").innerHTML = "";
-// 		j = 0;
-// 	}
-// }
-
-// $(document).ready(function() {
-//     type();
-// })
