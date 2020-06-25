@@ -82,7 +82,7 @@ function openCity(evt, sectionName) {
  */
 window.addEventListener("load", myInit, true); 
 
-function myInit(){
+function myInit() {
     document.getElementById("defaultOpen").click();
     writeSnippets();
 }
