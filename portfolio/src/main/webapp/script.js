@@ -78,6 +78,18 @@ function openCity(evt, sectionName) {
 }
 
 /**
+ * Fetch function from servlet
+ */
+const START_INDEX = 4;
+const END_INDEX = 17;
+async function getWelcomeData() {
+  const response = await fetch('/data');
+  let quote = await response.text();
+  // Slice quote so that formatting remains when on navigates to url/data
+  document.getElementById('data-container').innerText = quote.slice(START_INDEX, END_INDEX);
+}
+
+/**
  * Init function to perform certain tasks onload
  */
 window.addEventListener("load", myInit, true); 
@@ -85,4 +97,5 @@ window.addEventListener("load", myInit, true);
 function myInit() {
     document.getElementById("defaultOpen").click();
     writeSnippets();
+    getWelcomeData();
 }
