@@ -44,6 +44,16 @@ body {
     font-family: 'Roboto Mono', monospace; 
 }
 
+/* style h2 */
+h2 {
+    font-weight: normal;
+}
+
+/* style h4 */
+h4 {
+    font-weight: normal;
+}
+
 /* Style the profile picture*/
 #profile {
     height: 250px;
