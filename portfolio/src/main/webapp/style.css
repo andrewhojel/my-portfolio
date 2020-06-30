@@ -1,3 +1,93 @@
+/* Styling for comment delete button */
+.delete {
+    color: white;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+
+/* Break between commenter name and the content */
+.comment_break {
+    margin: 10px;
+}
+
+/* Styling for button in comment */
+.comment_button { 
+    display: inline-block;
+    padding: 1px 4.2px;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    font-size: 10px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+}
+
+/* Styling for list of comments */
+#comment_list {
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+/* Styling for each individual comment */
+.comment {
+    border: thin solid black;
+    display: block;
+    margin: 10px;
+    padding: 10px;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Float all comment buttons right */
+.comment button {
+    float: right;
+}
+
+/* Styling for comment title */
+.comment_title {
+    font-weight: bold;
+}
+
+/* Style hr divider */
+hr {
+    border-top: 1px solid #EEEEEE;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* Style form submit button */
+input[type=submit] {
+    font-family: 'Roboto Mono', monospace; 
+    background-color: white;
+    font-size: 16px;
+    border: 1px solid black;
+    margin-top: 10px;
+}
+
+/* Style form submit button when hovered over */
+input[type=submit]:hover {
+    font-family: 'Roboto Mono', monospace; 
+    background-color: white;
+    border: 2px solid black;
+}
+
+/* Style text input box */
+input[type=text] {
+    width: 100%;
+    font-family: 'Roboto Mono', monospace; 
+}
+
+/* Style comment box */
+textarea {
+    width:100%;
+    font-family: 'Roboto Mono', monospace; 
+}
+
 /* Style the tab */
 .tab {
     overflow: hidden;
@@ -44,13 +134,7 @@ body {
     font-family: 'Roboto Mono', monospace; 
 }
 
-/* style h2 */
-h2 {
-    font-weight: normal;
-}
-
-/* style h4 */
-h4 {
+h2, h4 {
     font-weight: normal;
 }
 

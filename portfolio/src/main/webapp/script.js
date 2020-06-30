@@ -63,7 +63,7 @@ function writeSnippets() {
 /**
  * The JS necessary for the tabs function to work 
  */
-function openCity(evt, sectionName) {
+function openTab(evt, sectionName) {
 	var i, tabcontent, tablinks;
 	tabcontent = document.getElementsByClassName("tabcontent");
 	for (i = 0; i < tabcontent.length; i++) {
@@ -80,13 +80,68 @@ function openCity(evt, sectionName) {
 /**
  * Fetch function from servlet
  */
-const START_INDEX = 4;
-const END_INDEX = 17;
 async function getWelcomeData() {
-  const response = await fetch('/data');
-  let quote = await response.text();
-  // Slice quote so that formatting remains when on navigates to url/data
-  document.getElementById('data-container').innerText = quote.slice(START_INDEX, END_INDEX);
+    // Get comments from the server
+    const response = await fetch('/data');
+    let comments = await response.json();
+
+    // Display the comments
+    const commentsEl = document.getElementById('comment_list');
+    comments.forEach((comment) => {
+        commentsEl.appendChild(createCommentElement(comment));
+    });
+}
+
+/**
+ * Creates one comment element
+ */
+function createCommentElement(comment) {
+    const commentElement = document.createElement('li');
+    commentElement.className = 'comment';
+
+    const titleElement = document.createElement('span');
+    titleElement.className = "comment_title";
+    titleElement.innerText = comment.name;
+
+    const deleteButtonElement = document.createElement('button');
+    deleteButtonElement.className = "comment_button delete"
+    deleteButtonElement.innerHTML = '<i class="fa fa-times"></i>';
+    deleteButtonElement.addEventListener('click', () => {
+        deleteTask(comment);
+
+        // Remove the task from the DOM.
+        commentElement.remove();
+    });
+
+    const breakElement = document.createElement("div");
+    breakElement.className = "comment_break"
+
+    const contentElement = document.createElement('span');
+    contentElement.innerText = comment.comment;
+
+    commentElement.appendChild(titleElement);
+    commentElement.appendChild(deleteButtonElement);
+    commentElement.appendChild(breakElement);
+    commentElement.appendChild(contentElement);
+    return commentElement;
+}
+
+/**
+ * Checks url and redirects to comments tab
+ */
+const TAB_ID = "Comments"
+const TAB_BUTTON_ID = "commentsOpen";
+function commentsLoad() {
+  if (window.location.href.indexOf("#Comments") > -1) {
+    document.getElementById(TAB_BUTTON_ID).click();
+  }
+}
+
+/** Tells the server to delete the task. */
+function deleteTask(comment) {
+  const params = new URLSearchParams();
+  params.append('id', comment.id);
+  fetch('/delete-comment', {method: 'POST', body: params});
 }
 
 /**
@@ -97,5 +152,6 @@ window.addEventListener("load", myInit, true);
 function myInit() {
     document.getElementById("defaultOpen").click();
     writeSnippets();
+    commentsLoad();
     getWelcomeData();
 }
