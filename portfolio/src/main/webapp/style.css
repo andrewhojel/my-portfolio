@@ -1,8 +1,28 @@
-/* Styling for comment delete button */
-.delete {
+/* Style for div holding sorting options for comments */
+.sort_div {
+    padding-top: 10px;
+}
+
+/* style the select structure */
+select {
+    padding: 3px;
+    font-family: 'Roboto Mono', monospace; 
+}
+
+/* Styling for delete all comments button */
+.delete_all {
     color: white;
     background-color: #d9534f;
     border-color: #d43f3a;
+    float: right;
+}
+
+/* Styling for delete individual comments button */
+.delete_one {
+    background-color: white;
+    color: #d9534f;
+    border-color: #d43f3a;
+    float: right;
 }
 
 /* Break between commenter name and the content */
@@ -12,17 +32,13 @@
 
 /* Styling for button in comment */
 .comment_button { 
-    display: inline-block;
     padding: 1px 4.2px;
-    font-weight: normal;
     text-align: center;
     vertical-align: middle;
-    touch-action: manipulation;
     border: 1px solid transparent;
-    white-space: nowrap;
-    font-size: 10px;
-    line-height: 1.42857143;
+    font-size: 14px;
     border-radius: 4px;
+    font-family: 'Roboto Mono', monospace; 
 }
 
 /* Styling for list of comments */
@@ -40,11 +56,6 @@
     width: 90%;
     margin-left: auto;
     margin-right: auto;
-}
-
-/* Float all comment buttons right */
-.comment button {
-    float: right;
 }
 
 /* Styling for comment title */

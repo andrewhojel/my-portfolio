@@ -4,8 +4,9 @@
         <meta charset="UTF-8">
         <title>Andrew Hojel</title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
+        <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+        <!-- <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"> -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
         <link rel="stylesheet" href="style.css">
         <link rel='icon' href='favicon.png' type='image/x-icon'>
         <script src="script.js"></script>
@@ -17,7 +18,6 @@
             <img id="profile" src="images/profile_picture.jpg" alt="">
             <h1>👋 Hi, I am Andrew Hojel</h1>
             <h2><i id="data-container"></i></h2>
-            <!-- make this into h2 so it is more accessible! -->
             <h2 id="snippetsTarget" >I am </h2>
             <p>
                 Hi! I am a rising junior at Stanford Univeristy studying Computer 
@@ -168,27 +168,35 @@
 
                 <p>Name: </p>
                 <input type="text" name="comment_name">
-                <!-- <p>Comment: <input type="text" class="long_text" name="comment_content"></p> -->
                 <p>Comment: </p>
                 <textarea type="text" name="comment_content" rows="2"></textarea>
 
                 <input type="submit" />
             </form>
             <hr>
-            <!-- <div id="comments_container"> -->
-                <!-- <ul id="comment-list">
-                    <li class="comment"><span><strong>Andrew Hojel</strong></span><button class="comment_button delete"><i class="fa fa-trash"></i></button><br/><span>Let's try this Let's try this Let's try this Let's try this Let's try this Let's try thisLet's try this Let's try thisLet's try this vLet's try this</span></li> 
-                </ul> -->
-            <!-- </div> -->
+            <div>
+                <label for="comment_count">Number of Comments Displayed: </label>
+                <select name="comment_count" id="comment_count" onchange="getComments()">
+                    <option value=5>5</option>
+                    <option value=10 selected>10</option>
+                    <option value=25>25</option>
+                    <option value=50>50</option>
+                </select>
+                <button class="comment_button delete_all" onclick="deleteAllComments()">Delete All</button>
+            </div>
+            <div class="sort_div">
+                <label style="margin-top: 50px" for="comment_sorting">Sorting Order: </label>
+                <select name="comment_sorting" id="comment_sorting" onchange="getComments()">
+                    <option value="timestamp_descending" selected>Newest First</option>
+                    <option value="timestamp_ascending">Oldest First</option>
+                    <option value="user_descending">User Alphabetical</option>
+                    <option value="user_ascending">User Reverse-Alphabetical</option>
+                    <option value="length_descending">Longest Comment First</option>
+                    <option value="length_ascending">Shortest Comment First</option>
+                </select>
+            </div>
             <ul id="comment_list"></ul>
         </div>
-
-      <!--
-      <p>Click here to get a random fact about me:</p>
-      <button onclick="addRandomFact()">Random Fact About Me!</button>
-      -->
-
-      <div id="fact-container"></div>
 
       <!-- Ensure that user can scroll to see all the content -->
       <div id="footer_compensation"></div>

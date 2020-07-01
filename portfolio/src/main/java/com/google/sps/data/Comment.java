@@ -14,18 +14,20 @@
 
 package com.google.sps.data;
 
-/** An comment on portoflio */
+/** A comment on portoflio */
 public final class Comment {
 
   private final long id;
   private final String name;
   private final String comment;
   private final long timestamp;
+  private final long comment_length;
 
-  public Comment(long id, String name, String comment, long timestamp) {
+  public Comment(long id, String name, String comment, long timestamp, long comment_length) {
     this.id = id;
     this.name = name;
     this.comment = comment;
     this.timestamp = timestamp;
+    this.comment_length = comment_length;
   }
 }

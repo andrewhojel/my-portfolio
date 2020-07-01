@@ -18,11 +18,17 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Entity;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.ArrayList;
 
 /** Servlet responsible for deleting comments. */
 @WebServlet("/delete-comment")
@@ -32,8 +38,23 @@ public class DeleteTaskServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long id = Long.parseLong(request.getParameter("id"));
 
-    Key commentEntityKey = KeyFactory.createKey("Comment", id);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.delete(commentEntityKey);
+    // if we have the id of a particular comment
+    if (id != -1) {
+        Key commentEntityKey = KeyFactory.createKey("Comment", id);
+        datastore.delete(commentEntityKey);
+    } 
+    // will delete all comments
+    else { 
+        Query query = new Query("Comment");
+        PreparedQuery comments = datastore.prepare(query);
+        List<Key> toDelete = new ArrayList<>();
+        for (Entity entity : comments.asIterable()) {
+            toDelete.add(entity.getKey());
+        }
+        datastore.delete(toDelete);
+    }
+
+    
   }
 }

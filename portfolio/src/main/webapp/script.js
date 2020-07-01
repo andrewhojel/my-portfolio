@@ -78,18 +78,36 @@ function openTab(evt, sectionName) {
 }
 
 /**
- * Fetch function from servlet
+ * Get all comments from the server
  */
-async function getWelcomeData() {
+async function getComments() {
+    // Clear old comments
+    const commentsEl = document.getElementById('comment_list');
+    // for some reason this wasn't working $("comment_list").empty();
+    emptyElement(commentsEl);
+
+    // Determine display preferences
+    const numComments = document.getElementById('comment_count').value;
+    const sortType = document.getElementById('comment_sorting').value;
+
     // Get comments from the server
-    const response = await fetch('/data');
-    let comments = await response.json();
+    const queryString = '?count=' + numComments + '&sort=' + sortType;
+    const response = await fetch('/data' + queryString);
+    const comments = await response.json();
 
     // Display the comments
-    const commentsEl = document.getElementById('comment_list');
     comments.forEach((comment) => {
         commentsEl.appendChild(createCommentElement(comment));
     });
+}
+
+/**
+ * Deletes all children of a certain element
+ */
+function emptyElement(element) {
+    while (element.lastChild) {
+        element.removeChild(element.lastChild);
+    }
 }
 
 /**
@@ -97,24 +115,26 @@ async function getWelcomeData() {
  */
 function createCommentElement(comment) {
     const commentElement = document.createElement('li');
-    commentElement.className = 'comment';
+    commentElement.classList.add('comment');
 
     const titleElement = document.createElement('span');
-    titleElement.className = "comment_title";
+    titleElement.classList.add("comment_title");
     titleElement.innerText = comment.name;
 
     const deleteButtonElement = document.createElement('button');
-    deleteButtonElement.className = "comment_button delete"
-    deleteButtonElement.innerHTML = '<i class="fa fa-times"></i>';
+    deleteButtonElement.classList.add("comment_button", "delete_one");
+    const deleteButtonIcon = document.createElement('i');
+    deleteButtonIcon.classList.add("fa", "fa-times");
+    deleteButtonElement.appendChild(deleteButtonIcon);
     deleteButtonElement.addEventListener('click', () => {
-        deleteTask(comment);
+        deleteComment(comment);
 
         // Remove the task from the DOM.
         commentElement.remove();
     });
 
     const breakElement = document.createElement("div");
-    breakElement.className = "comment_break"
+    breakElement.classList.add("comment_break");
 
     const contentElement = document.createElement('span');
     contentElement.innerText = comment.comment;
@@ -127,21 +147,37 @@ function createCommentElement(comment) {
 }
 
 /**
- * Checks url and redirects to comments tab
+ * Checks url and clicks the proper tags
  */
-const TAB_ID = "Comments"
 const TAB_BUTTON_ID = "commentsOpen";
-function commentsLoad() {
-  if (window.location.href.indexOf("#Comments") > -1) {
+function clickTab() {
+  if (window.location.hash == "#Comments") {
     document.getElementById(TAB_BUTTON_ID).click();
+  } else {
+    document.getElementById("defaultOpen").click();
   }
 }
 
-/** Tells the server to delete the task. */
-function deleteTask(comment) {
+/** 
+ * Tells the server to delete all tasks
+ */
+const COMMENT_SENTINEL = -1; 
+async function deleteAllComments() {
+  const params = new URLSearchParams();
+  params.append('id', COMMENT_SENTINEL);
+  await fetch('/delete-comment', {method: 'POST', body: params});
+  getComments();
+}
+
+/** 
+ * Tells the server to delete the task. 
+ */
+async function deleteComment(comment) {
   const params = new URLSearchParams();
   params.append('id', comment.id);
-  fetch('/delete-comment', {method: 'POST', body: params});
+  await fetch('/delete-comment', {method: 'POST', body: params});
+  getComments();
+
 }
 
 /**
@@ -150,8 +186,7 @@ function deleteTask(comment) {
 window.addEventListener("load", myInit, true); 
 
 function myInit() {
-    document.getElementById("defaultOpen").click();
+    clickTab();
     writeSnippets();
-    commentsLoad();
-    getWelcomeData();
+    getComments();
 }
