@@ -164,10 +164,13 @@
 
         <!-- Comments Section -->
         <div id="Comments" class="tabcontent">
-            <form action="/data" method="POST">
-
-                <p>Name: </p>
-                <input type="text" name="comment_name">
+            <div id="authorized_comments">
+            <button class="comment_button" onclick="changeName()">Change Display Name</button>
+            <form class="comment_form" action="/data" method="POST">
+                <label for="comment_name">Name: </label>
+                <select name="comment_name" id="comment_name">
+                </select>
+                
                 <p>Comment: </p>
                 <textarea type="text" name="comment_content" rows="2"></textarea>
 
@@ -183,6 +186,7 @@
                     <option value=50>50</option>
                 </select>
                 <button class="comment_button delete_all" onclick="deleteAllComments()">Delete All</button>
+                <a id="logout"><button class="comment_button">Log Out</button></a>
             </div>
             <div class="sort_div">
                 <label style="margin-top: 50px" for="comment_sorting">Sorting Order: </label>
@@ -196,6 +200,10 @@
                 </select>
             </div>
             <ul id="comment_list"></ul>
+            </div>
+            <div id="unauthorized_comments">
+                <p>In order to access the comments section you must be logged in.</p>
+            </div>
         </div>
 
       <!-- Ensure that user can scroll to see all the content -->

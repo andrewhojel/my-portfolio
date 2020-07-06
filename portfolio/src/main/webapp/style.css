@@ -1,3 +1,21 @@
+/* Style for comment form */
+.comment_form {
+    margin-top: 16px;
+}
+
+/* Styles links throughout the website */
+.link {
+    color: black;
+    font-family: 'Roboto Mono', monospace;
+    text-decoration: none;
+    border: 1px solid black;
+    padding: 1px 6px;
+}
+
+/* .link:hover {
+    text-decoration: underline;
+} */
+
 /* Style for div holding sorting options for comments */
 .sort_div {
     padding-top: 10px;
@@ -13,8 +31,8 @@ select {
 .delete_all {
     color: white;
     background-color: #d9534f;
-    border-color: #d43f3a;
-    float: right;
+    border-color: none;
+    margin-left: 15px;
 }
 
 /* Styling for delete individual comments button */
@@ -39,6 +57,7 @@ select {
     font-size: 14px;
     border-radius: 4px;
     font-family: 'Roboto Mono', monospace; 
+    float: right;
 }
 
 /* Styling for list of comments */
@@ -81,7 +100,7 @@ input[type=submit] {
 }
 
 /* Style form submit button when hovered over */
-input[type=submit]:hover {
+.link:hover, input[type=submit]:hover {
     font-family: 'Roboto Mono', monospace; 
     background-color: white;
     border: 2px solid black;

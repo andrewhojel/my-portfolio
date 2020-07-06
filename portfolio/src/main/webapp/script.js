@@ -78,6 +78,32 @@ function openTab(evt, sectionName) {
 }
 
 /**
+ * Gets the authentication status of user and other relevant user info 
+ */
+
+async function preparePage() {
+    const response = await fetch('/auth');
+    const currentUser = await response.json();
+    if (currentUser.loggedIn && currentUser.nickname == "") {
+        currentUser.nickname = prompt("Please enter your desired display name: ");
+        const params = new URLSearchParams();
+        params.append('nickname', currentUser.nickname);
+        await fetch('/auth', {method: 'POST', body: params});
+    }
+    toggleCommentSection(currentUser);
+}
+
+async function changeName() {
+    let nickname = prompt("Please enter your desired display name: ");
+    const params = new URLSearchParams();
+    params.append('nickname', nickname);
+    await fetch('/auth', {method: 'POST', body: params});
+    
+    // Reload the page to update User JSON 
+    window.location.reload();
+}
+
+/**
  * Get all comments from the server
  */
 async function getComments() {
@@ -94,6 +120,8 @@ async function getComments() {
     const queryString = '?count=' + numComments + '&sort=' + sortType;
     const response = await fetch('/data' + queryString);
     const comments = await response.json();
+
+    console.log(comments);
 
     // Display the comments
     comments.forEach((comment) => {
@@ -181,6 +209,51 @@ async function deleteComment(comment) {
 }
 
 /**
+ * Ensures that only logged in users can see the comment section!
+ */
+function toggleCommentSection(user) {
+    var commentSection = document.getElementById("authorized_comments");
+    var commentBlocker = document.getElementById("unauthorized_comments");
+    console.log(user.loggedIn);
+    if (user.loggedIn) {
+        commentBlocker.style.display = "none";
+        commentSection.style.display = "block";
+
+        // Populate the logout button with a link
+        var logoutButton = document.getElementById("logout");
+        logoutButton.setAttribute("href", user.logoutURL);
+
+        // Populate form with name options
+        var nameSelect = document.getElementById("comment_name");
+
+        const emailOption = document.createElement("option");
+        emailOption.innerText = user.email;
+        emailOption.setAttribute("value", user.email);
+
+        const nicknameOption = document.createElement("option");
+        nicknameOption.innerText = user.nickname;
+        nicknameOption.setAttribute("value", user.nickname);
+
+        nameSelect.appendChild(nicknameOption);
+        nameSelect.appendChild(emailOption);
+
+        getComments();
+    } else {
+        commentSection.style.display = "none";
+        commentBlocker.style.display = "block";
+
+        // make log in button 
+        const loginButton = document.createElement('a')
+        loginButton.setAttribute("href", user.loginURL);
+        loginButton.innerText = "Log in";
+        loginButton.classList.add("link");
+
+        // attach to parent nodes
+        commentBlocker.appendChild(loginButton);
+    }
+}
+
+/**
  * Init function to perform certain tasks onload
  */
 window.addEventListener("load", myInit, true); 
@@ -188,5 +261,5 @@ window.addEventListener("load", myInit, true);
 function myInit() {
     clickTab();
     writeSnippets();
-    getComments();
+    preparePage()
 }
