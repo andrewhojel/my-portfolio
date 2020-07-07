@@ -1,3 +1,9 @@
+/* Style for image for images for each marker */
+.marker_image {
+    width: 75px;
+}
+
+
 /* Style for map (imported from API) */
 #map {
   border: thin solid black;
@@ -21,10 +27,6 @@
     border: 1px solid black;
     padding: 1px 6px;
 }
-
-/* .link:hover {
-    text-decoration: underline;
-} */
 
 /* Style for div holding sorting options for comments */
 .sort_div {
@@ -198,7 +200,7 @@ h2, h4 {
 
 /* Ensures that all content is viewable */
 #footer_compensation {
-    height:50px;
+    height:75px;
     background-color: white;
     width: 100%;
 }

@@ -121,8 +121,6 @@ async function getComments() {
     const response = await fetch('/data' + queryString);
     const comments = await response.json();
 
-    console.log(comments);
-
     // Display the comments
     comments.forEach((comment) => {
         commentsEl.appendChild(createCommentElement(comment));
@@ -208,20 +206,12 @@ async function deleteComment(comment) {
 
 }
 
-/** Creates a map and adds it to the page. */
-function createMap() {
-  const map = new google.maps.Map(
-      document.getElementById('map'),
-      {center: {lat: 37.422, lng: -122.084}, zoom: 16});
-}
-
 /**
  * Ensures that only logged in users can see the comment section!
  */
 function toggleCommentSection(user) {
     var commentSection = document.getElementById("authorized_comments");
     var commentBlocker = document.getElementById("unauthorized_comments");
-    console.log(user.loggedIn);
     if (user.loggedIn) {
         commentBlocker.style.display = "none";
         commentSection.style.display = "block";
@@ -260,6 +250,91 @@ function toggleCommentSection(user) {
     }
 }
 
+// location data for all content
+const markerData =  [new google.maps.LatLng(37.422179, -122.084036), 
+    new google.maps.LatLng(33.809218, -118.066596),
+    new google.maps.LatLng(37.428214, -122.161195),
+    new google.maps.LatLng(37.425333, -122.170153),
+    new google.maps.LatLng(37.430174, -122.173341),
+    new google.maps.LatLng(42.383904, -71.133425),
+    new google.maps.LatLng(19.419853, -99.161854),
+    new google.maps.LatLng(37.427474, -122.169901),
+    new google.maps.LatLng(30.302448, -97.748066),
+    new google.maps.LatLng(44.061074, -70.532018),
+    new google.maps.LatLng(42.360162, -71.094203),
+    new google.maps.LatLng(39.952391, -75.193171)]
+
+/**
+ * Generates the map & markers
+ */
+function createMap() {
+    var styledMapType = new google.maps.StyledMapType(
+        mapJSON,
+        {name: 'My Map'});
+
+    const map = new google.maps.Map(
+        document.getElementById('map'),
+        {center: {lat: 37.693622, lng: -97.195151}, zoom: 3,
+        mapTypeControlOptions: {
+                mapTypeIds: ['My Map']
+            }
+        });
+  
+    map.mapTypes.set('My Map', styledMapType);
+    map.setMapTypeId('My Map');
+
+    // gather HTML for marker content & generate markers
+    prepareMarkers();
+    for (let i = 0; i < markersHTML.length; i++) {
+        addMarker(map, i);
+    }
+}
+
+/**
+ * Adds content to a marker and adds to map
+ */
+function addMarker(map, i) {
+    // add marker content
+    var infowindow = new google.maps.InfoWindow({
+        content: markersHTML[i]
+    });
+
+    // create marker 
+    var marker = new google.maps.Marker({
+        position: markerData[i],
+        map: map,
+        title: 'marker #' + i,
+    });
+
+    // show information when clicked
+    marker.addListener('click', function() {
+        infowindow.open(map, marker);
+    });
+}
+
+/**
+ * Takes content from Experience & Education tabs to populate Map
+ */
+let markersHTML = [];
+function prepareMarkers() {
+    // only render the content once
+    if (markersHTML.length == 0) {
+        let experiences = document.getElementsByClassName("experience");
+
+        // remove formatting used for each experience
+        for (let i = 0; i < experiences.length; i++) {
+            var contentString = experiences[i].cloneNode(true);
+            contentString.classList.remove("experience");
+            var experience_text = contentString.getElementsByClassName("experience_text");
+            experience_text[0].classList.remove("experience_text");
+            var experience_image = contentString.getElementsByClassName("experience_image");
+            experience_image[0].classList.replace("experience_image", "marker_image");
+
+            markersHTML[i] = contentString;
+        }
+    }
+}
+
 /**
  * Init function to perform certain tasks onload
  */
@@ -270,6 +345,166 @@ async function myInit() {
     toggleCommentSection(user);
     clickTab();
     writeSnippets();
-    //createMap();
-    // preparePage();
 }
+
+// contains the style formatting for the map feature
+const mapJSON =  [
+        {
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#f5f5f5"
+            }
+            ]
+        },
+        {
+            "elementType": "labels.icon",
+            "stylers": [
+            {
+                "visibility": "off"
+            }
+            ]
+        },
+        {
+            "elementType": "labels.text.fill",
+            "stylers": [
+            {
+                "color": "#616161"
+            }
+            ]
+        },
+        {
+            "elementType": "labels.text.stroke",
+            "stylers": [
+            {
+                "color": "#f5f5f5"
+            }
+            ]
+        },
+        {
+            "featureType": "administrative.land_parcel",
+            "elementType": "labels.text.fill",
+            "stylers": [
+            {
+                "color": "#bdbdbd"
+            }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#eeeeee"
+            }
+            ]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "labels.text.fill",
+            "stylers": [
+            {
+                "color": "#757575"
+            }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#e5e5e5"
+            }
+            ]
+        },
+        {
+            "featureType": "poi.park",
+            "elementType": "labels.text.fill",
+            "stylers": [
+            {
+                "color": "#9e9e9e"
+            }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#ffffff"
+            }
+            ]
+        },
+        {
+            "featureType": "road.arterial",
+            "elementType": "labels.text.fill",
+            "stylers": [
+            {
+                "color": "#757575"
+            }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#dadada"
+            }
+            ]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "labels.text.fill",
+            "stylers": [
+            {
+                "color": "#616161"
+            }
+            ]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "labels.text.fill",
+            "stylers": [
+            {
+                "color": "#9e9e9e"
+            }
+            ]
+        },
+        {
+            "featureType": "transit.line",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#e5e5e5"
+            }
+            ]
+        },
+        {
+            "featureType": "transit.station",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#eeeeee"
+            }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "geometry",
+            "stylers": [
+            {
+                "color": "#c9c9c9"
+            }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "labels.text.fill",
+            "stylers": [
+            {
+                "color": "#9e9e9e"
+            }
+            ]
+        }
+        ]
