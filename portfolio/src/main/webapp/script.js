@@ -17,16 +17,16 @@
  */
 function addRandomFact() {
 	const facts =
-		['🏙️: I am from Mexico City (capital of Mexico)', '🏎️: I am an avid Formula 1 fan',
-		'🏫: I graduated from highschool a year early', 
-		'🎓: I was at Stanford for a year with both of my older siblings',
-		'🚣‍♂️: I was a competitive rower in high school'];
+		["🏙️: I am from Mexico City (capital of Mexico)', '🏎️: I am an avid Formula 1 fan",
+		"🏫: I graduated from highschool a year early", 
+		"🎓: I was at Stanford for a year with both of my older siblings",
+		"🚣‍♂️: I was a competitive rower in high school"];
 
 	// Pick a random fact.
 	const fact = facts[Math.floor(Math.random() * facts.length)];
 
 	// Add the fact to the stage.
-	const factContainer = document.getElementById('fact-container');
+	const factContainer = document.getElementById("fact-container");
 	factContainer.innerText = fact;
 }
 
@@ -64,7 +64,7 @@ function writeSnippets() {
  * The JS necessary for the tabs function to work 
  */
 function openTab(evt, sectionName) {
-	var i, tabcontent, tablinks;
+	let i, tabcontent, tablinks;
 	tabcontent = document.getElementsByClassName("tabcontent");
 	for (i = 0; i < tabcontent.length; i++) {
 		tabcontent[i].style.display = "none";
@@ -80,24 +80,26 @@ function openTab(evt, sectionName) {
 /**
  * Gets the authentication status of user and other relevant user info 
  */
-
 async function getUser() {
-    const response = await fetch('/auth');
+    const response = await fetch("/auth");
     const currentUser = await response.json();
     if (currentUser.loggedIn && currentUser.nickname == "") {
         currentUser.nickname = prompt("Please enter your desired display name: ");
         const params = new URLSearchParams();
-        params.append('nickname', currentUser.nickname);
-        await fetch('/auth', {method: 'POST', body: params});
+        params.append("nickname", currentUser.nickname);
+        await fetch("/auth", {method: "POST", body: params});
     }
     return currentUser;
 }
 
+/**
+ * Function that changes the logged-in user's nickname
+ */
 async function changeName() {
     let nickname = prompt("Please enter your desired display name: ");
     const params = new URLSearchParams();
-    params.append('nickname', nickname);
-    await fetch('/auth', {method: 'POST', body: params});
+    params.append("nickname", nickname);
+    await fetch("/auth", {method: "POST", body: params});
     
     // Reload the page to update User JSON 
     window.location.reload();
@@ -108,17 +110,16 @@ async function changeName() {
  */
 async function getComments() {
     // Clear old comments
-    const commentsEl = document.getElementById('comment_list');
-    // for some reason this wasn't working $("comment_list").empty();
+    const commentsEl = document.getElementById("comment_list");
     emptyElement(commentsEl);
 
     // Determine display preferences
-    const numComments = document.getElementById('comment_count').value;
-    const sortType = document.getElementById('comment_sorting').value;
+    const numComments = document.getElementById("comment_count").value;
+    const sortType = document.getElementById("comment_sorting").value;
 
     // Get comments from the server
-    const queryString = '?count=' + numComments + '&sort=' + sortType;
-    const response = await fetch('/data' + queryString);
+    const queryString = "?count=" + numComments + "&sort=" + sortType;
+    const response = await fetch("/data" + queryString);
     const comments = await response.json();
 
     // Display the comments
@@ -140,19 +141,19 @@ function emptyElement(element) {
  * Creates one comment element
  */
 function createCommentElement(comment) {
-    const commentElement = document.createElement('li');
-    commentElement.classList.add('comment');
+    const commentElement = document.createElement("li");
+    commentElement.classList.add("comment");
 
-    const titleElement = document.createElement('span');
+    const titleElement = document.createElement("span");
     titleElement.classList.add("comment_title");
     titleElement.innerText = comment.name;
 
-    const deleteButtonElement = document.createElement('button');
+    const deleteButtonElement = document.createElement("button");
     deleteButtonElement.classList.add("comment_button", "delete_one");
-    const deleteButtonIcon = document.createElement('i');
+    const deleteButtonIcon = document.createElement("i");
     deleteButtonIcon.classList.add("fa", "fa-times");
     deleteButtonElement.appendChild(deleteButtonIcon);
-    deleteButtonElement.addEventListener('click', () => {
+    deleteButtonElement.addEventListener("click", () => {
         deleteComment(comment);
 
         // Remove the task from the DOM.
@@ -162,7 +163,7 @@ function createCommentElement(comment) {
     const breakElement = document.createElement("div");
     breakElement.classList.add("comment_break");
 
-    const contentElement = document.createElement('span');
+    const contentElement = document.createElement("span");
     contentElement.innerText = comment.comment;
 
     commentElement.appendChild(titleElement);
@@ -175,23 +176,22 @@ function createCommentElement(comment) {
 /**
  * Checks url and clicks the proper tags
  */
-const TAB_BUTTON_ID = "commentsOpen";
 function clickTab() {
   if (window.location.hash == "#Comments") {
-    document.getElementById(TAB_BUTTON_ID).click();
+    document.getElementById("commentsOpen").click();
   } else {
     document.getElementById("defaultOpen").click();
   }
 }
 
+const COMMENT_SENTINEL = -1; 
 /** 
  * Tells the server to delete all tasks
  */
-const COMMENT_SENTINEL = -1; 
 async function deleteAllComments() {
   const params = new URLSearchParams();
-  params.append('id', COMMENT_SENTINEL);
-  await fetch('/delete-comment', {method: 'POST', body: params});
+  params.append("id", COMMENT_SENTINEL);
+  await fetch("/delete-comment", {method: "POST", body: params});
   getComments();
 }
 
@@ -200,28 +200,27 @@ async function deleteAllComments() {
  */
 async function deleteComment(comment) {
   const params = new URLSearchParams();
-  params.append('id', comment.id);
-  await fetch('/delete-comment', {method: 'POST', body: params});
+  params.append("id", comment.id);
+  await fetch("/delete-comment", {method: "POST", body: params});
   getComments();
-
 }
 
 /**
  * Ensures that only logged in users can see the comment section!
  */
 function toggleCommentSection(user) {
-    var commentSection = document.getElementById("authorized_comments");
-    var commentBlocker = document.getElementById("unauthorized_comments");
+    let commentSection = document.getElementById("authorized_comments");
+    let commentBlocker = document.getElementById("unauthorized_comments");
     if (user.loggedIn) {
         commentBlocker.style.display = "none";
         commentSection.style.display = "block";
 
         // Populate the logout button with a link
-        var logoutButton = document.getElementById("logout");
+        let logoutButton = document.getElementById("logout");
         logoutButton.setAttribute("href", user.logoutURL);
 
         // Populate form with name options
-        var nameSelect = document.getElementById("comment_name");
+        let nameSelect = document.getElementById("comment_name");
 
         const emailOption = document.createElement("option");
         emailOption.innerText = user.email;
@@ -240,7 +239,7 @@ function toggleCommentSection(user) {
         commentBlocker.style.display = "block";
 
         // make log in button 
-        const loginButton = document.createElement('a')
+        const loginButton = document.createElement("a")
         loginButton.setAttribute("href", user.loginURL);
         loginButton.innerText = "Log in";
         loginButton.classList.add("link");
@@ -268,20 +267,20 @@ const markerData =  [new google.maps.LatLng(37.422179, -122.084036),
  * Generates the map & markers
  */
 function createMap() {
-    var styledMapType = new google.maps.StyledMapType(
+    let styledMapType = new google.maps.StyledMapType(
         mapJSON,
-        {name: 'My Map'});
+        {name: "My Map"});
 
     const map = new google.maps.Map(
-        document.getElementById('map'),
+        document.getElementById("map"),
         {center: {lat: 37.693622, lng: -97.195151}, zoom: 3,
         mapTypeControlOptions: {
-                mapTypeIds: ['My Map']
+                mapTypeIds: ["My Map"]
             }
         });
   
-    map.mapTypes.set('My Map', styledMapType);
-    map.setMapTypeId('My Map');
+    map.mapTypes.set("My Map", styledMapType);
+    map.setMapTypeId("My Map");
 
     // gather HTML for marker content & generate markers
     prepareMarkers();
@@ -295,27 +294,27 @@ function createMap() {
  */
 function addMarker(map, i) {
     // add marker content
-    var infowindow = new google.maps.InfoWindow({
+    let infowindow = new google.maps.InfoWindow({
         content: markersHTML[i]
     });
 
     // create marker 
-    var marker = new google.maps.Marker({
+    let marker = new google.maps.Marker({
         position: markerData[i],
         map: map,
-        title: 'marker #' + i,
+        title: "marker #" + i,
     });
 
     // show information when clicked
-    marker.addListener('click', function() {
+    marker.addListener("click", function() {
         infowindow.open(map, marker);
     });
 }
 
+let markersHTML = [];
 /**
  * Takes content from Experience & Education tabs to populate Map
  */
-let markersHTML = [];
 function prepareMarkers() {
     // only render the content once
     if (markersHTML.length == 0) {
@@ -323,11 +322,11 @@ function prepareMarkers() {
 
         // remove formatting used for each experience
         for (let i = 0; i < experiences.length; i++) {
-            var contentString = experiences[i].cloneNode(true);
+            let contentString = experiences[i].cloneNode(true);
             contentString.classList.remove("experience");
-            var experience_text = contentString.getElementsByClassName("experience_text");
+            let experience_text = contentString.getElementsByClassName("experience_text");
             experience_text[0].classList.remove("experience_text");
-            var experience_image = contentString.getElementsByClassName("experience_image");
+            let experience_image = contentString.getElementsByClassName("experience_image");
             experience_image[0].classList.replace("experience_image", "marker_image");
 
             markersHTML[i] = contentString;
@@ -335,11 +334,12 @@ function prepareMarkers() {
     }
 }
 
+// used to run myInit() on page load
+window.addEventListener("load", myInit, true); 
+
 /**
  * Init function to perform certain tasks onload
  */
-window.addEventListener("load", myInit, true); 
-
 async function myInit() {
     const user = await getUser();
     toggleCommentSection(user);

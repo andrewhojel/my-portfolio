@@ -82,8 +82,8 @@ public class DataServlet extends HttpServlet {
   }
 
   /**
-  * Put new comment in the Database with data from POST
-  */
+   * Put new comment in the Database with data from POST
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
       // check if user is logged in / store email
@@ -126,7 +126,7 @@ public class DataServlet extends HttpServlet {
    * Prepares a query with the user-inputed sorting order
    */
   private Query prepareQuery(String sortingOrder) {
-      // set to the default case
+      // Set to the default case
       Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
       // Given user input, format the query

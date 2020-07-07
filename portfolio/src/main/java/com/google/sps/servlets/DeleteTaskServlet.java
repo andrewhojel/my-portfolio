@@ -39,13 +39,12 @@ public class DeleteTaskServlet extends HttpServlet {
     long id = Long.parseLong(request.getParameter("id"));
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    // if we have the id of a particular comment
+    // If we have the id of a particular comment
     if (id != -1) {
         Key commentEntityKey = KeyFactory.createKey("Comment", id);
         datastore.delete(commentEntityKey);
-    } 
-    // will delete all comments
-    else { 
+    } else { 
+        // Will delete all comments
         Query query = new Query("Comment");
         PreparedQuery comments = datastore.prepare(query);
         List<Key> toDelete = new ArrayList<>();
