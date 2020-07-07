@@ -81,7 +81,7 @@ function openTab(evt, sectionName) {
  * Gets the authentication status of user and other relevant user info 
  */
 
-async function preparePage() {
+async function getUser() {
     const response = await fetch('/auth');
     const currentUser = await response.json();
     if (currentUser.loggedIn && currentUser.nickname == "") {
@@ -90,7 +90,7 @@ async function preparePage() {
         params.append('nickname', currentUser.nickname);
         await fetch('/auth', {method: 'POST', body: params});
     }
-    toggleCommentSection(currentUser);
+    return currentUser;
 }
 
 async function changeName() {
@@ -208,6 +208,13 @@ async function deleteComment(comment) {
 
 }
 
+/** Creates a map and adds it to the page. */
+function createMap() {
+  const map = new google.maps.Map(
+      document.getElementById('map'),
+      {center: {lat: 37.422, lng: -122.084}, zoom: 16});
+}
+
 /**
  * Ensures that only logged in users can see the comment section!
  */
@@ -258,8 +265,11 @@ function toggleCommentSection(user) {
  */
 window.addEventListener("load", myInit, true); 
 
-function myInit() {
+async function myInit() {
+    const user = await getUser();
+    toggleCommentSection(user);
     clickTab();
     writeSnippets();
-    preparePage()
+    //createMap();
+    // preparePage();
 }

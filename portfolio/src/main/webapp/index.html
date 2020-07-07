@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <title>Andrew Hojel</title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0y1Y13mFN986knNxFdKMx-e_aRyMv0ms"></script>
         <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
         <!-- <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"> -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
@@ -31,6 +32,7 @@
                 <button class="tablinks" onclick="openTab(event, 'Experience')" id="defaultOpen">Experience</button>
                 <button class="tablinks" onclick="openTab(event, 'Education')">Education</button>
                 <button class="tablinks" onclick="openTab(event, 'Comments')" id="commentsOpen">Comments</button>
+                <button class="tablinks" onclick="openTab(event, 'Maps'); createMap();" id="mapsOpen">Map</button>
             </div>
 
             <!-- Experience Section -->
@@ -204,6 +206,11 @@
             <div id="unauthorized_comments">
                 <p>In order to access the comments section you must be logged in.</p>
             </div>
+        </div>
+
+        <div id="Maps" class="tabcontent">
+            <div id="map"></div>
+            <p>This page shows a Google Map!</p>
         </div>
 
       <!-- Ensure that user can scroll to see all the content -->

@@ -1,3 +1,13 @@
+/* Style for map (imported from API) */
+#map {
+  border: thin solid black;
+  width: 500px;
+  height: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 25px;
+}
+
 /* Style for comment form */
 .comment_form {
     margin-top: 16px;
