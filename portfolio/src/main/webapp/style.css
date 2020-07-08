@@ -1,3 +1,8 @@
+/* Styling for the labels of the sorting options for comments */
+.sort_label {
+    margin-top: 50px;
+}
+
 /* Style for image for images for each marker */
 .marker_image {
     width: 75px;

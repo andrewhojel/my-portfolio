@@ -116,9 +116,10 @@ async function getComments() {
     // Determine display preferences
     const numComments = document.getElementById("comment_count").value;
     const sortType = document.getElementById("comment_sorting").value;
+    const langCode = document.getElementById("comment_language").value;
 
     // Get comments from the server
-    const queryString = "?count=" + numComments + "&sort=" + sortType;
+    const queryString = "?count=" + numComments + "&sort=" + sortType + "&lang=" + langCode;
     const response = await fetch("/data" + queryString);
     const comments = await response.json();
 

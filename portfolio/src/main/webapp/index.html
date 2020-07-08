@@ -191,7 +191,7 @@
                 <a id="logout"><button class="comment_button">Log Out</button></a>
             </div>
             <div class="sort_div">
-                <label style="margin-top: 50px" for="comment_sorting">Sorting Order: </label>
+                <label class="sort_label" for="comment_sorting">Sorting Order: </label>
                 <select name="comment_sorting" id="comment_sorting" onchange="getComments()">
                     <option value="timestamp_descending" selected>Newest First</option>
                     <option value="timestamp_ascending">Oldest First</option>
@@ -199,6 +199,16 @@
                     <option value="user_ascending">User Reverse-Alphabetical</option>
                     <option value="length_descending">Longest Comment First</option>
                     <option value="length_ascending">Shortest Comment First</option>
+                </select>
+            </div>
+            <div class="sort_div">
+                <label class="sort_label" for="comment_sorting">Language: </label>
+                <select name="comment_language" id="comment_language" onchange="getComments()">
+                    <option value="en" selected>English</option>
+                    <option value="zh">Chinese</option>
+                    <option value="es">Spanish</option>
+                    <option value="hi">Hindi</option>
+                    <option value="ar">Arabic</option>
                 </select>
             </div>
             <ul id="comment_list"></ul>

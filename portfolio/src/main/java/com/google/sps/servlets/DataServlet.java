@@ -15,6 +15,9 @@
 package com.google.sps.servlets;
 
 import java.io.PrintWriter;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -38,6 +41,9 @@ import com.google.gson.Gson;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
+  // Some libraries can only be run when deployed
+  private final boolean dev = false;
+
   /**
   * Get comments from Database (correct number and sorting using query strings) 
   */
@@ -53,11 +59,14 @@ public class DataServlet extends HttpServlet {
     
     int numComments = Integer.parseInt(request.getParameter("count"));
     String sortingOrder = request.getParameter("sort");
+    String langCode = request.getParameter("lang");
     Query query = prepareQuery(sortingOrder);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(numComments));
     
+    // get Translation instance for future usage
+    Translate translate = TranslateOptions.getDefaultInstance().getService();
 
     // populate array with data from the DB
     List<Comment> comments = new ArrayList<>();
@@ -68,6 +77,9 @@ public class DataServlet extends HttpServlet {
         String comment_content = (String) entity.getProperty("comment");
         long timestamp = (long) entity.getProperty("timestamp");
         long comment_length = (long) entity.getProperty("length");
+
+        // Translate the comment content
+        comment_content = dev ? comment_content : translate(translate, comment_content, langCode);
 
         Comment comment = new Comment(id, name, comment_content, timestamp, comment_length, email);
         comments.add(comment);
@@ -120,6 +132,15 @@ public class DataServlet extends HttpServlet {
     Gson gson = new Gson();
     String json = gson.toJson(arr);
     return json;
+  }
+
+  /**
+   * Translates the comments into the desired language
+   */
+  private String translate(Translate translate, String comment, String langCode) {
+    Translation translation =
+        translate.translate(comment, Translate.TranslateOption.targetLanguage(langCode));
+    return translation.getTranslatedText();
   }
 
   /**
