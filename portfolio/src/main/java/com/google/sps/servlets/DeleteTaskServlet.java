@@ -54,7 +54,5 @@ public class DeleteTaskServlet extends HttpServlet {
         }
         datastore.delete(toDelete);
     }
-
-    
   }
 }

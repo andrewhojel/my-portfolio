@@ -14,6 +14,9 @@
 
 package com.google.sps.servlets;
 
+import java.io.PrintWriter;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -40,6 +43,14 @@ public class DataServlet extends HttpServlet {
   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // check if user is logged in / store email
+    UserService userService = UserServiceFactory.getUserService();
+    if (!userService.isUserLoggedIn()) {
+        PrintWriter out = response.getWriter();
+        out.println("<h1>Restricted Action!</h1>");
+        return;
+    }
+    
     int numComments = Integer.parseInt(request.getParameter("count"));
     String sortingOrder = request.getParameter("sort");
     Query query = prepareQuery(sortingOrder);
@@ -51,13 +62,14 @@ public class DataServlet extends HttpServlet {
     // populate array with data from the DB
     List<Comment> comments = new ArrayList<>();
     for (Entity entity : results) {
+        String email = (String) entity.getProperty("email");
         long id = entity.getKey().getId();
         String name = (String) entity.getProperty("name");
         String comment_content = (String) entity.getProperty("comment");
         long timestamp = (long) entity.getProperty("timestamp");
         long comment_length = (long) entity.getProperty("length");
 
-        Comment comment = new Comment(id, name, comment_content, timestamp, comment_length);
+        Comment comment = new Comment(id, name, comment_content, timestamp, comment_length, email);
         comments.add(comment);
     }
 
@@ -74,12 +86,22 @@ public class DataServlet extends HttpServlet {
   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+      // check if user is logged in / store email
+      UserService userService = UserServiceFactory.getUserService();
+      if (!userService.isUserLoggedIn()) {
+          PrintWriter out = response.getWriter();
+          out.println("<h1>Restricted Action!</h1>");
+          return;
+      }
+      String email = userService.getCurrentUser().getEmail();
+      
       // Get data from request
       String name = request.getParameter("comment_name");
       String comment =  request.getParameter("comment_content");
 
       // Add to Datastore
       Entity commentEntity = new Entity("Comment");
+      commentEntity.setProperty("email", email);
       commentEntity.setProperty("name", name);
       commentEntity.setProperty("comment", comment);
       commentEntity.setProperty("timestamp", System.currentTimeMillis());
@@ -100,9 +122,9 @@ public class DataServlet extends HttpServlet {
     return json;
   }
 
-/**
- * Prepares a query with the user-inputed sorting order
- */
+  /**
+   * Prepares a query with the user-inputed sorting order
+   */
   private Query prepareQuery(String sortingOrder) {
       // set to the default case
       Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
