@@ -82,12 +82,20 @@ function openTab(evt, sectionName) {
  */
 async function getUser() {
     const response = await fetch("/auth");
+    if (!response.ok) {
+        alert("HTTP-Error: " + response.status);
+        return undefined;
+    } 
+
     const currentUser = await response.json();
-    if (currentUser.loggedIn && currentUser.nickname == "") {
+    if (currentUser.loggedIn && currentUser.nickname === '') {
         currentUser.nickname = prompt("Please enter your desired display name: ");
         const params = new URLSearchParams();
         params.append("nickname", currentUser.nickname);
-        await fetch("/auth", {method: "POST", body: params});
+        let nickname = await fetch("/auth", {method: "POST", body: params});
+        if (!nickname.ok) {
+            alert("HTTP-Error: " + response.status);
+        } 
     }
     return currentUser;
 }
@@ -99,7 +107,10 @@ async function changeName() {
     let nickname = prompt("Please enter your desired display name: ");
     const params = new URLSearchParams();
     params.append("nickname", nickname);
-    await fetch("/auth", {method: "POST", body: params});
+    let response = await fetch("/auth", {method: "POST", body: params});
+    if (!response.ok) {
+        alert("HTTP-Error: " + response.status);
+    } 
     
     // Reload the page to update User JSON 
     window.location.reload();
@@ -121,6 +132,11 @@ async function getComments() {
     // Get comments from the server
     const queryString = "?count=" + numComments + "&sort=" + sortType + "&lang=" + langCode;
     const response = await fetch("/data" + queryString);
+    if (!response.ok) {
+        alert("HTTP-Error: " + response.status);
+        return;
+    } 
+
     const comments = await response.json();
 
     // Display the comments
@@ -178,7 +194,7 @@ function createCommentElement(comment) {
  * Checks url and clicks the proper tags
  */
 function clickTab() {
-  if (window.location.hash == "#Comments") {
+  if (window.location.hash === "#Comments") {
     document.getElementById("commentsOpen").click();
   } else {
     document.getElementById("defaultOpen").click();
@@ -192,8 +208,12 @@ const COMMENT_SENTINEL = -1;
 async function deleteAllComments() {
   const params = new URLSearchParams();
   params.append("id", COMMENT_SENTINEL);
-  await fetch("/delete-comment", {method: "POST", body: params});
-  getComments();
+  let response = await fetch("/delete-comment", {method: "POST", body: params});
+  if (response.ok) {
+      getComments();
+  } else {
+      alert("HTTP-Error: " + response.status);
+  }
 }
 
 /** 
@@ -202,8 +222,12 @@ async function deleteAllComments() {
 async function deleteComment(comment) {
   const params = new URLSearchParams();
   params.append("id", comment.id);
-  await fetch("/delete-comment", {method: "POST", body: params});
-  getComments();
+  let response = await fetch("/delete-comment", {method: "POST", body: params});
+  if (response.ok) {
+      getComments();
+  } else {
+      alert("HTTP-Error: " + response.status);
+  }
 }
 
 /**
@@ -239,18 +263,18 @@ function toggleCommentSection(user) {
         commentSection.style.display = "none";
         commentBlocker.style.display = "block";
 
-        // make log in button 
+        // Make log in button 
         const loginButton = document.createElement("a")
         loginButton.setAttribute("href", user.loginURL);
         loginButton.innerText = "Log in";
         loginButton.classList.add("link");
 
-        // attach to parent nodes
+        // Attach to parent nodes
         commentBlocker.appendChild(loginButton);
     }
 }
 
-// location data for all content
+// Location data for all content
 const markerData =  [new google.maps.LatLng(37.422179, -122.084036), 
     new google.maps.LatLng(33.809218, -118.066596),
     new google.maps.LatLng(37.428214, -122.161195),
@@ -283,7 +307,7 @@ function createMap() {
     map.mapTypes.set("My Map", styledMapType);
     map.setMapTypeId("My Map");
 
-    // gather HTML for marker content & generate markers
+    // Gather HTML for marker content & generate markers
     prepareMarkers();
     for (let i = 0; i < markersHTML.length; i++) {
         addMarker(map, i);
@@ -294,19 +318,19 @@ function createMap() {
  * Adds content to a marker and adds to map
  */
 function addMarker(map, i) {
-    // add marker content
+    // Add marker content
     let infowindow = new google.maps.InfoWindow({
         content: markersHTML[i]
     });
 
-    // create marker 
+    // Create marker 
     let marker = new google.maps.Marker({
         position: markerData[i],
         map: map,
         title: "marker #" + i,
     });
 
-    // show information when clicked
+    // Show information when clicked
     marker.addListener("click", function() {
         infowindow.open(map, marker);
     });
@@ -317,11 +341,11 @@ let markersHTML = [];
  * Takes content from Experience & Education tabs to populate Map
  */
 function prepareMarkers() {
-    // only render the content once
+    // Only render the content once
     if (markersHTML.length == 0) {
         let experiences = document.getElementsByClassName("experience");
 
-        // remove formatting used for each experience
+        // Remove formatting used for each experience
         for (let i = 0; i < experiences.length; i++) {
             let contentString = experiences[i].cloneNode(true);
             contentString.classList.remove("experience");
@@ -335,7 +359,7 @@ function prepareMarkers() {
     }
 }
 
-// used to run myInit() on page load
+// Used to run myInit() on page load
 window.addEventListener("load", myInit, true); 
 
 /**
@@ -348,7 +372,7 @@ async function myInit() {
     writeSnippets();
 }
 
-// contains the style formatting for the map feature
+// Contains the style formatting for the map feature
 const mapJSON =  [
         {
             "elementType": "geometry",

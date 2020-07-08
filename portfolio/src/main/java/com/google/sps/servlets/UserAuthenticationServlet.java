@@ -33,6 +33,11 @@ import com.google.gson.Gson;
 @WebServlet("/auth")
 public class UserAuthenticationServlet extends HttpServlet {
 
+  /**
+   * Generates a JSON object with user information
+   * @param request     not used (do not need any info from client)
+   * @param response    sends JSON object to client
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
@@ -49,7 +54,7 @@ public class UserAuthenticationServlet extends HttpServlet {
 
       // Get user nickname or have them input it
       nickname = getUserNickname(userService.getCurrentUser().getUserId());
-      if (nickname == null) nickname = "";
+      if (nickname == null) { nickname = ""; } 
     } else {
       email = "";
       logoutURL = "";
@@ -64,6 +69,11 @@ public class UserAuthenticationServlet extends HttpServlet {
     response.getWriter().println(json);
   }
 
+  /**
+   * Stores the authenticated user's nickname
+   * @param request     captures user's id and new nickname
+   * @param response    redirects page after POST    
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
@@ -87,6 +97,7 @@ public class UserAuthenticationServlet extends HttpServlet {
 
   /**
    * Converts the List of Comment objects to JSON using Gson Java library
+   * @param user    User object that contains all user info
    */
   private String convertToJson(User user) {
     Gson gson = new Gson();
@@ -96,6 +107,7 @@ public class UserAuthenticationServlet extends HttpServlet {
 
   /** 
    * Returns the nickname of the user with id, or null if the user has not set a nickname. 
+   * @param id  the unique id of the authenticated user
    */
   private String getUserNickname(String id) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

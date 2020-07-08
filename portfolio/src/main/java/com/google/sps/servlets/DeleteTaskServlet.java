@@ -34,6 +34,11 @@ import java.util.ArrayList;
 @WebServlet("/delete-comment")
 public class DeleteTaskServlet extends HttpServlet {
 
+  /**
+   * Delete a single comment or all comments
+   * @param request     carries the comment id or sentinel (if deleting all)
+   * @param response    not used to return anything in this function
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long id = Long.parseLong(request.getParameter("id"));

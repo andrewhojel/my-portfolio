@@ -42,14 +42,16 @@ import com.google.gson.Gson;
 public class DataServlet extends HttpServlet {
 
   // Some libraries can only be run when deployed
-  private final boolean dev = false;
+  private final boolean dev = true;
 
   /**
-  * Get comments from Database (correct number and sorting using query strings) 
-  */
+   * Get comments from Database (correct number, sorting, & translation using query strings)
+   * @param request     contains info on number of comments, sorting, & translation
+   * @param response    returns comment entities to the client 
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // check if user is logged in / store email
+    // Check if user is logged in / store email
     UserService userService = UserServiceFactory.getUserService();
     if (!userService.isUserLoggedIn()) {
         PrintWriter out = response.getWriter();
@@ -65,10 +67,10 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(numComments));
     
-    // get Translation instance for future usage
+    // Get Translation instance for future usage
     Translate translate = TranslateOptions.getDefaultInstance().getService();
 
-    // populate array with data from the DB
+    // Populate array with data from the DB
     List<Comment> comments = new ArrayList<>();
     for (Entity entity : results) {
         String email = (String) entity.getProperty("email");
@@ -95,10 +97,12 @@ public class DataServlet extends HttpServlet {
 
   /**
    * Put new comment in the Database with data from POST
+   * @param request     contains all the information about the comment
+   * @param reponnse    sends redirect to #Comments page to render comments
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      // check if user is logged in / store email
+      // Check if user is logged in / store email
       UserService userService = UserServiceFactory.getUserService();
       if (!userService.isUserLoggedIn()) {
           PrintWriter out = response.getWriter();
@@ -127,6 +131,7 @@ public class DataServlet extends HttpServlet {
 
   /**
    * Converts the List of Comment objects to JSON using Gson Java library
+   * @param arr an array of comments that will be converted to JSON
    */
   private String convertToJson(List<Comment> arr) {
     Gson gson = new Gson();
@@ -136,6 +141,9 @@ public class DataServlet extends HttpServlet {
 
   /**
    * Translates the comments into the desired language
+   * @param translate   the translation object (used to call translation API function)
+   * @param comment     a comment that needs to be translate
+   * @param langCode    the language code of the target language 
    */
   private String translate(Translate translate, String comment, String langCode) {
     Translation translation =
@@ -145,6 +153,7 @@ public class DataServlet extends HttpServlet {
 
   /**
    * Prepares a query with the user-inputed sorting order
+   * @param sortingOrder    the order that the comments will be sorted in
    */
   private Query prepareQuery(String sortingOrder) {
       // Set to the default case
