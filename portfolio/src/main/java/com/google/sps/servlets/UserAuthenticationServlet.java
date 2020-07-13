@@ -54,7 +54,9 @@ public class UserAuthenticationServlet extends HttpServlet {
 
       // Get user nickname or have them input it
       nickname = getUserNickname(userService.getCurrentUser().getUserId());
-      if (nickname == null) { nickname = ""; } 
+      if (nickname == null) { 
+          nickname = ""; 
+      } 
     } else {
       email = "";
       logoutURL = "";
