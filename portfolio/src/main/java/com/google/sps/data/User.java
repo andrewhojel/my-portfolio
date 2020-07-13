@@ -14,7 +14,7 @@
 
 package com.google.sps.data;
 
-/** Stores user information (pertanent to login) */
+/** Stores user information (pertinent to login) */
 public final class User {
 
   private final boolean loggedIn;
