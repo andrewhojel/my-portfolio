@@ -12,6 +12,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// All the constants used throughout script.js
+const PHRASES = ['a software engineer', 'a designer', 'a product manager', 
+               'a photographer', 'a proud Mexican', 'an entrepreneur'];
+const EMOJIS = ['🖥️', '🎨', '💼', '📷', '🇲🇽', '📈'];
+const RATE = 100;
+const PAUSE = 1000;
+const COMMENT_SENTINEL = -1; 
+const mapStyle = "mapStyle.json";
+
+// Used to store styling for the map
+let mapJSON;
+
+// Global variables used for writeSnippets()
+let i = 0;
+let j = 0;
+
+/**
+ * Global variable for prepareMarkers() -> so this doesn't have to be reloaded each
+ * time the Map tab is opened
+ */
+let markersHTML = [];
+
+// Used to run myInit() on page load
+window.addEventListener('load', myInit, true); 
+
+/**
+ * Init function to perform certain tasks onload
+ */
+async function myInit() {
+    const user = await getUser();
+    toggleCommentSection(user);
+    clickTab();
+    writeSnippets();
+    readMapStyle();
+}
+
 /**
  * Adds a random fact to the page.
  */
@@ -29,15 +65,6 @@ function addRandomFact() {
 	const factContainer = document.getElementById('fact-container');
 	factContainer.innerText = fact;
 }
-
-let i = 0;
-let j = 0;
-
-const PHRASES = ['a software engineer', 'a designer', 'a product manager', 
-               'a photographer', 'a proud Mexican', 'an entrepreneur'];
-const EMOJIS = ['🖥️', '🎨', '💼', '📷', '🇲🇽', '📈'];
-const RATE = 100;
-const PAUSE = 1000;
 
 /**
  * Fills in the 'I am a' sentences with different phrases
@@ -201,7 +228,6 @@ function clickTab() {
   }
 }
 
-const COMMENT_SENTINEL = -1; 
 /** 
  * Tells the server to delete all tasks
  */
@@ -292,6 +318,8 @@ const markerData =  [new google.maps.LatLng(37.422179, -122.084036),
  * Generates the map & markers
  */
 function createMap() {
+    // let mapJSON = readMapStyle();
+
     let styledMapType = new google.maps.StyledMapType(
         mapJSON,
         {name: 'My Map'});
@@ -336,14 +364,13 @@ function addMarker(map, i) {
     });
 }
 
-let markersHTML = [];
 /**
  * Takes content from Experience & Education tabs to populate Map
  */
 function prepareMarkers() {
     // Only render the content once
     if (markersHTML.length == 0) {
-        let experiences = document.getElementsByClassName('experience');
+        const experiences = document.getElementsByClassName('experience');
 
         // Remove formatting used for each experience
         for (let i = 0; i < experiences.length; i++) {
@@ -359,177 +386,11 @@ function prepareMarkers() {
     }
 }
 
-// Used to run myInit() on page load
-window.addEventListener('load', myInit, true); 
-
 /**
- * Init function to perform certain tasks onload
+ * Reads in the styling for the map
  */
-async function myInit() {
-    const user = await getUser();
-    toggleCommentSection(user);
-    clickTab();
-    writeSnippets();
+function readMapStyle() {
+    $.getJSON("mapStyle.json", function(data){
+        mapJSON = data; 
+    });
 }
-
-// Contains the style formatting for the map feature
-const mapJSON =  [
-        {
-            "elementType": "geometry",
-            "stylers": [
-            {
-                "color": "#f5f5f5"
-            }
-            ]
-        },
-        {
-            "elementType": "labels.icon",
-            "stylers": [
-            {
-                "visibility": "off"
-            }
-            ]
-        },
-        {
-            "elementType": "labels.text.fill",
-            "stylers": [
-            {
-                "color": "#616161"
-            }
-            ]
-        },
-        {
-            "elementType": "labels.text.stroke",
-            "stylers": [
-            {
-                "color": "#f5f5f5"
-            }
-            ]
-        },
-        {
-            "featureType": "administrative.land_parcel",
-            "elementType": "labels.text.fill",
-            "stylers": [
-            {
-                "color": "#bdbdbd"
-            }
-            ]
-        },
-        {
-            "featureType": "poi",
-            "elementType": "geometry",
-            "stylers": [
-            {
-                "color": "#eeeeee"
-            }
-            ]
-        },
-        {
-            "featureType": "poi",
-            "elementType": "labels.text.fill",
-            "stylers": [
-            {
-                "color": "#757575"
-            }
-            ]
-        },
-        {
-            "featureType": "poi.park",
-            "elementType": "geometry",
-            "stylers": [
-            {
-                "color": "#e5e5e5"
-            }
-            ]
-        },
-        {
-            "featureType": "poi.park",
-            "elementType": "labels.text.fill",
-            "stylers": [
-            {
-                "color": "#9e9e9e"
-            }
-            ]
-        },
-        {
-            "featureType": "road",
-            "elementType": "geometry",
-            "stylers": [
-            {
-                "color": "#ffffff"
-            }
-            ]
-        },
-        {
-            "featureType": "road.arterial",
-            "elementType": "labels.text.fill",
-            "stylers": [
-            {
-                "color": "#757575"
-            }
-            ]
-        },
-        {
-            "featureType": "road.highway",
-            "elementType": "geometry",
-            "stylers": [
-            {
-                "color": "#dadada"
-            }
-            ]
-        },
-        {
-            "featureType": "road.highway",
-            "elementType": "labels.text.fill",
-            "stylers": [
-            {
-                "color": "#616161"
-            }
-            ]
-        },
-        {
-            "featureType": "road.local",
-            "elementType": "labels.text.fill",
-            "stylers": [
-            {
-                "color": "#9e9e9e"
-            }
-            ]
-        },
-        {
-            "featureType": "transit.line",
-            "elementType": "geometry",
-            "stylers": [
-            {
-                "color": "#e5e5e5"
-            }
-            ]
-        },
-        {
-            "featureType": "transit.station",
-            "elementType": "geometry",
-            "stylers": [
-            {
-                "color": "#eeeeee"
-            }
-            ]
-        },
-        {
-            "featureType": "water",
-            "elementType": "geometry",
-            "stylers": [
-            {
-                "color": "#c9c9c9"
-            }
-            ]
-        },
-        {
-            "featureType": "water",
-            "elementType": "labels.text.fill",
-            "stylers": [
-            {
-                "color": "#9e9e9e"
-            }
-            ]
-        }
-        ]
