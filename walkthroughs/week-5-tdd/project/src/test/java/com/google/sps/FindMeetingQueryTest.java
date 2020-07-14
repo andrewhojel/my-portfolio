@@ -586,7 +586,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-   @Test 
+  @Test 
   public void optimizedDurationTest() {
     // Ensure that the optimized query returns the open time slots 
     // that have the largest duration (not highest count) 
@@ -620,7 +620,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-   @Test 
+  @Test 
   public void optimizeDurationNoRequired() {
     // Ensure that the optimized query returns the open time slots 
     // that have the largest duration (not highest count) 
