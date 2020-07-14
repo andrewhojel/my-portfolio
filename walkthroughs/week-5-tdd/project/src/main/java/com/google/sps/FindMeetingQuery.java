@@ -105,7 +105,7 @@ public final class FindMeetingQuery {
     Set<String> ignoreAttendees = new HashSet<String>();
 
     // StaticInfo is used to pass info that doesn't change through the recursive function
-    StaticReqInfo staticInfo = new StaticReqInfo(events, request); 
+    StaticRecInfo staticInfo = new StaticRecInfo(events, request); 
 
     // Generate subsets of optional Attendees of increasing size (one below all b/c that was already tested)
     for (int i = 1 ; i < staticInfo.getOptAttendees().size(); i++) {
@@ -128,7 +128,7 @@ public final class FindMeetingQuery {
    * @param staticInfo      Contains all the information that doesn't change throughout recursive calls 
    * @param numAttendees    The size of the subset of optional attendees
    */
-  private Triplet<Boolean, Integer, List<TimeRange>> recOptimalQueryHelper(Set<String> ignoreAttendees, StaticReqInfo staticInfo, Integer numAttendees) {
+  private Triplet<Boolean, Integer, List<TimeRange>> recOptimalQueryHelper(Set<String> ignoreAttendees, StaticRecInfo staticInfo, Integer numAttendees) {
       List<String> chosenAttendees = new ArrayList<String>();
       return recOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, 0, 0);
   }
@@ -144,7 +144,7 @@ public final class FindMeetingQuery {
    * @param attendeeIndex   Index in array of optional attendees (found within the StaticInfo object)
    * @param chosenIndex     Index in array of chosen attendees
    */
-  private Triplet<Boolean, Integer, List<TimeRange>> recOptimalQuery(Set<String> ignoreAttendees, StaticReqInfo staticInfo, Integer numAttendees, List<String> chosenAttendees, Integer attendeeIndex, Integer chosenIndex) {
+  private Triplet<Boolean, Integer, List<TimeRange>> recOptimalQuery(Set<String> ignoreAttendees, StaticRecInfo staticInfo, Integer numAttendees, List<String> chosenAttendees, Integer attendeeIndex, Integer chosenIndex) {
       // Subset is of size numAttendees (Base Case)
       if (chosenIndex == numAttendees) {
         // Prepare and union sets to create set of all required attendees and optional attendees in current subset
