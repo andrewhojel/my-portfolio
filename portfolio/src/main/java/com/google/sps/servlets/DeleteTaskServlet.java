@@ -34,18 +34,22 @@ import java.util.ArrayList;
 @WebServlet("/delete-comment")
 public class DeleteTaskServlet extends HttpServlet {
 
+  /**
+   * Delete a single comment or all comments
+   * @param request     carries the comment id or sentinel (if deleting all)
+   * @param response    not used to return anything in this function
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long id = Long.parseLong(request.getParameter("id"));
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    // if we have the id of a particular comment
+    // If we have the id of a particular comment
     if (id != -1) {
         Key commentEntityKey = KeyFactory.createKey("Comment", id);
         datastore.delete(commentEntityKey);
-    } 
-    // will delete all comments
-    else { 
+    } else { 
+        // Will delete all comments
         Query query = new Query("Comment");
         PreparedQuery comments = datastore.prepare(query);
         List<Key> toDelete = new ArrayList<>();
@@ -54,7 +58,5 @@ public class DeleteTaskServlet extends HttpServlet {
         }
         datastore.delete(toDelete);
     }
-
-    
   }
 }

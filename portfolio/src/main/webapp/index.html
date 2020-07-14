@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <title>Andrew Hojel</title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0y1Y13mFN986knNxFdKMx-e_aRyMv0ms"></script>
         <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
         <!-- <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css"> -->
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
@@ -31,6 +32,7 @@
                 <button class="tablinks" onclick="openTab(event, 'Experience')" id="defaultOpen">Experience</button>
                 <button class="tablinks" onclick="openTab(event, 'Education')">Education</button>
                 <button class="tablinks" onclick="openTab(event, 'Comments')" id="commentsOpen">Comments</button>
+                <button class="tablinks" onclick="openTab(event, 'Maps'); createMap();" id="mapsOpen">Map</button>
             </div>
 
             <!-- Experience Section -->
@@ -164,10 +166,12 @@
 
         <!-- Comments Section -->
         <div id="Comments" class="tabcontent">
-            <form action="/data" method="POST">
-
-                <p>Name: </p>
-                <input type="text" name="comment_name">
+            <div id="authorized_comments">
+            <button class="comment_button" onclick="changeName()">Change Display Name</button>
+            <form class="comment_form" action="/data" method="POST">
+                <label for="comment_name">Name: </label>
+                <select name="comment_name" id="comment_name"></select>
+                
                 <p>Comment: </p>
                 <textarea type="text" name="comment_content" rows="2"></textarea>
 
@@ -183,9 +187,10 @@
                     <option value=50>50</option>
                 </select>
                 <button class="comment_button delete_all" onclick="deleteAllComments()">Delete All</button>
+                <a id="logout"><button class="comment_button">Log Out</button></a>
             </div>
             <div class="sort_div">
-                <label style="margin-top: 50px" for="comment_sorting">Sorting Order: </label>
+                <label class="sort_label" for="comment_sorting">Sorting Order: </label>
                 <select name="comment_sorting" id="comment_sorting" onchange="getComments()">
                     <option value="timestamp_descending" selected>Newest First</option>
                     <option value="timestamp_ascending">Oldest First</option>
@@ -195,7 +200,30 @@
                     <option value="length_ascending">Shortest Comment First</option>
                 </select>
             </div>
+            <div class="sort_div">
+                <label class="sort_label" for="comment_sorting">Language: </label>
+                <select name="comment_language" id="comment_language" onchange="getComments()">
+                    <option value="en" selected>English</option>
+                    <option value="zh">Chinese</option>
+                    <option value="es">Spanish</option>
+                    <option value="hi">Hindi</option>
+                    <option value="ar">Arabic</option>
+                </select>
+            </div>
             <ul id="comment_list"></ul>
+            </div>
+            <div id="unauthorized_comments">
+                <p>In order to access the comments section you must be logged in.</p>
+            </div>
+        </div>
+
+        <!-- Maps Section -->
+        <div id="Maps" class="tabcontent">
+            <h4 class="experience_header">
+                Click the pins on the map to explore content
+                from the Experience and Education:
+            </h4>
+            <div id="map"></div>
         </div>
 
       <!-- Ensure that user can scroll to see all the content -->

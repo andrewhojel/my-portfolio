@@ -14,22 +14,20 @@
 
 package com.google.sps.data;
 
-/** A comment on portoflio */
-public final class Comment {
+/** Stores user information (pertinent to login) */
+public final class User {
 
-  private final long id;
-  private final String name;
-  private final String comment;
-  private final long timestamp;
-  private final long comment_length;
+  private final boolean loggedIn;
+  private final String loginURL;
+  private final String logoutURL;
   private final String email;
+  private final String nickname;
 
-  public Comment(long id, String name, String comment, long timestamp, long comment_length, String email) {
-    this.id = id;
-    this.name = name;
-    this.comment = comment;
-    this.timestamp = timestamp;
-    this.comment_length = comment_length;
+  public User(boolean loggedIn, String loginURL, String logoutURL, String email, String nickname) {
+    this.loggedIn = loggedIn;
+    this.loginURL = loginURL;
+    this.logoutURL = logoutURL;
     this.email = email;
+    this.nickname = nickname;
   }
 }

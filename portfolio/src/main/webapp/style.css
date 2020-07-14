@@ -1,9 +1,44 @@
+/* Styling for the labels of the sorting options for comments */
+.sort_label {
+    margin-top: 50px;
+}
+
+/* Style for image for images for each marker */
+.marker_image {
+    width: 75px;
+}
+
+
+/* Style for map (imported from API) */
+#map {
+  border: thin solid black;
+  width: 500px;
+  height: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 25px;
+}
+
+/* Style for comment form */
+.comment_form {
+    margin-top: 16px;
+}
+
+/* Styles links throughout the website */
+.link {
+    color: black;
+    font-family: 'Roboto Mono', monospace;
+    text-decoration: none;
+    border: 1px solid black;
+    padding: 1px 6px;
+}
+
 /* Style for div holding sorting options for comments */
 .sort_div {
     padding-top: 10px;
 }
 
-/* style the select structure */
+/* Style the select structure */
 select {
     padding: 3px;
     font-family: 'Roboto Mono', monospace; 
@@ -13,8 +48,8 @@ select {
 .delete_all {
     color: white;
     background-color: #d9534f;
-    border-color: #d43f3a;
-    float: right;
+    border-color: none;
+    margin-left: 15px;
 }
 
 /* Styling for delete individual comments button */
@@ -39,6 +74,7 @@ select {
     font-size: 14px;
     border-radius: 4px;
     font-family: 'Roboto Mono', monospace; 
+    float: right;
 }
 
 /* Styling for list of comments */
@@ -81,6 +117,7 @@ input[type=submit] {
 }
 
 /* Style form submit button when hovered over */
+.link:hover, 
 input[type=submit]:hover {
     font-family: 'Roboto Mono', monospace; 
     background-color: white;
@@ -145,7 +182,8 @@ body {
     font-family: 'Roboto Mono', monospace; 
 }
 
-h2, h4 {
+h2, 
+h4 {
     font-weight: normal;
 }
 
@@ -169,7 +207,7 @@ h2, h4 {
 
 /* Ensures that all content is viewable */
 #footer_compensation {
-    height:50px;
+    height:75px;
     background-color: white;
     width: 100%;
 }
