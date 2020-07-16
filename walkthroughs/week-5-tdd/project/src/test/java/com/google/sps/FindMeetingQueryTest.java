@@ -65,7 +65,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void optionsForNoAttendees() {
+  public void returnFullDayForNoRequiredAttendeesForRegularQuery() {
     MeetingRequest request = new MeetingRequest(NO_ATTENDEES, DURATION_1_HOUR);
 
     Collection<TimeRange> actual = query.query(NO_EVENTS, request);
@@ -75,7 +75,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void noOptionsForTooLongOfARequest() {
+  public void returnNoOptionsForTooLongOfARequestForeRegularQuery() {
     // The duration should be longer than a day. This means there should be no options.
     int duration = TimeRange.WHOLE_DAY.duration() + 1;
     MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_A), duration);
@@ -103,7 +103,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void everyAttendeeIsConsidered() {
+  public void returnOpenTimesForMultipleRequiredAttendeesForRegularQuery() {
     // Have each person have different events. We should see two options because each person has
     // split the restricted times.
     //
@@ -130,7 +130,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void overlappingEvents() {
+  public void returnOpenTimesForOverlappingEventsForRegularQuery() {
     // Have an event for each person, but have their events overlap. We should only see two options.
     //
     // Events  :       |--A--|
@@ -156,7 +156,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void nestedEvents() {
+  public void returnOpenTimesForNestedEventsForRegularQuery() {
     // Have an event for each person, but have one person's event fully contain another's event. We
     // should see two options.
     //
@@ -183,7 +183,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void doubleBookedPeople() {
+  public void returnOpenTimesForDoubleBookedRequiredAttendeeForRegularQuery() {
     // Have one person, but have them registered to attend two events at the same time.
     //
     // Events  :       |----A----|
@@ -208,7 +208,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void justEnoughRoom() {
+  public void returnOpenTimeJustEnoughRoomForRegularQuery() {
     // Have one person, but make it so that there is just enough room at one point in the day to
     // have the meeting.
     //
@@ -232,7 +232,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void ignoresPeopleNotAttending() {
+  public void returnOpenDayBecauseMeetingRequestContainsRequiredAttendeeNotBookedForRegularQuery() {
     // Add an event, but make the only attendee someone different from the person looking to book
     // a meeting. This event should not affect the booking.
     Collection<Event> events = Arrays.asList(new Event("Event 1",
@@ -257,7 +257,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void notEnoughRoom() {
+  public void returnNoOpenTimesBecauseNotEnoughRoomForRequiredForRegularQuery() {
     // Have one person, but make it so that there is not enough room at any point in the day to
     // have the meeting.
     //
@@ -280,7 +280,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test 
-  public void optionalAttendeeFullyBooked() {
+  public void returnOpenSlotsForRequiredAndOptionalAttendeeFullyBookedForRegularQuery() {
     // Have each person have different events. We should see three options because each person has
     // split the restricted times. The optional attendee is fully-booked, so they have no effect
     // on the result.
@@ -312,7 +312,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test 
-  public void optionalAttendeeSingleConflict() {
+  public void returnOpenSlotsForOptionalAttendeeSingleConflictForRegularQuery() {
     // Have each person have different events. There should be three options ignoring
     // the optional attendee, but since there exist time options with the optional
     // attendee, the final result is two options/
@@ -344,7 +344,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void optionalIgnored() {
+  public void returnOpenTimesIgnoringOptionalAttendeeThatShrinkOnlyOpenSlotBelowMinDurationForRegularQuery() {
     // Have one person, but make it so that there is just enough room at one point in the day to
     // have the meeting. The optional attendee shortens this time, so they are ignored!.
     //
@@ -372,7 +372,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test 
-  public void justOptionalAttendees() {
+  public void returnOpenTimesForNoRequiredAndTwoOptionalAttendeesForRegularQuery() {
     // There are two optional attendees and no mandatory attendees. Given the 
     // schedules there are two timeslots where the option attendees are free.
     //
@@ -405,7 +405,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test 
-  public void optionalAttendeesFullyBooked() {
+  public void returnNoOpenTimesBecauseNoRequiredAndOptionalFullyBookedForRegularQuery() {
     // Have each person have different events. We should see three options because each person has
     // split the restricted times. The optional attendee is fully-booked, so they have no effect
     // on the result.
@@ -434,7 +434,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-  public void optionalAtendeeSubset() {
+  public void returnOpenTimesWithoutOptionalAttendeeWhoShortensTimeBelowMinDurationForRegularQuery() {
     // Have one person, but make it so that there is just enough room at one point in the day to
     // have the meeting. The optional attendee shortens this time, so they are ignored!.
     //
@@ -461,9 +461,9 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-  public void optionalAtendeeIntersection() {
+  public void returnOpenTimeShortenedByIncludingOptionalAttendeeForRegularQuery() {
     // Have one person, but make it so that there is just enough room at one point in the day to
-    // have the meeting. The optional attendee shortens this time, so they are ignored!.
+    // have the meeting. The optional attendee shortens this time!
     //
     // Opt.    : |---B---| 
     // Events  : |--A--|     |----A----|
@@ -489,7 +489,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test 
-  public void basicChallengeQuery() {
+  public void returnOpenTimesForOptionalAttendeesNotFullyBookedForOptimizedQuery() {
     // It is impossible to include all optional atendees, but there is an option to 
     // include one option attendee.
     //
@@ -520,7 +520,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test 
-  public void threeOptionalChallengeQuery() {
+  public void returnOpenTimesMaximizeOptionalAttendantsForOptimizedQuery() {
     // A challenge query that involves three optional attendees 
     // but only two are combatible with req attendee open slots.
     //
@@ -557,7 +557,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test 
-  public void optimizedOptionalAttendeesBooked() {
+  public void returnOpenScheduleForNoRequiredAndBookedOptionalForOptimizedQuery() {
     // Have each person have different events. We should see three options because each person has
     // split the restricted times. The optional attendee is fully-booked, so they have no effect
     // on the result.
@@ -587,7 +587,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test 
-  public void optimizedDurationTest() {
+  public void returnLargestDurationForOptimizedQueryWithRequired() {
     // Ensure that the optimized query returns the open time slots 
     // that have the largest duration (not highest count) 
     //                              
@@ -621,7 +621,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test 
-  public void optimizeDurationNoRequired() {
+  public void returnLargestDurationForOptimizedQueryNoRequired() {
     // Ensure that the optimized query returns the open time slots 
     // that have the largest duration (not highest count) 
     //                              

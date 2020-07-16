@@ -25,14 +25,14 @@ const mapStyle = "mapStyle.json";
 let mapJSON;
 
 // Global variables used for writeSnippets()
-let i = 0;
-let j = 0;
+let charIdx = 0;
+let phraseIdx = 0;
 
 /**
  * Global variable for prepareMarkers() -> so this doesn't have to be reloaded each
  * time the Map tab is opened
  */
-let markersHTML = [];
+const markersHTML = [];
 
 // Used to run myInit() on page load
 window.addEventListener('load', myInit, true); 
@@ -70,19 +70,16 @@ function addRandomFact() {
  * Fills in the 'I am a' sentences with different phrases
  */
 function writeSnippets() {
-    if (i == 0) document.getElementById('snippetsTarget').innerHTML = EMOJIS[j] + ' I am ';
+    if (charIdx == 0) document.getElementById('snippetsTarget').innerHTML = EMOJIS[phraseIdx] + ' I am ';
 
-	// Use typing effect to print PHRASE[j]
-	if (i < PHRASES[j].length) {
-        document.getElementById('snippetsTarget').innerHTML += PHRASES[j].charAt(i);
-		i++;
+	// Use typing effect to print PHRASE[phraseIdx]
+	if (charIdx < PHRASES[phraseIdx].length) {
+        document.getElementById('snippetsTarget').innerHTML += PHRASES[phraseIdx].charAt(charIdx);
+		charIdx++;
 		setTimeout(writeSnippets, RATE);
-	} 
-
-	// Go to next phrase after entire phrase has been printer
-	else {
-		i = 0;
-        (j + 1) < PHRASES.length ? j++ : j = 0;
+	} else { // Go to next phrase after entire phrase has been printer
+		charIdx = 0;
+        (phraseIdx + 1) < PHRASES.length ? phraseIdx++ : phraseIdx = 0;
 		setTimeout(writeSnippets, PAUSE);
 	}
 }
@@ -318,8 +315,6 @@ const markerData =  [new google.maps.LatLng(37.422179, -122.084036),
  * Generates the map & markers
  */
 function createMap() {
-    // let mapJSON = readMapStyle();
-
     let styledMapType = new google.maps.StyledMapType(
         mapJSON,
         {name: 'My Map'});

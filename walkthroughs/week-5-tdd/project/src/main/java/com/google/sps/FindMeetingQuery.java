@@ -63,29 +63,29 @@ public final class FindMeetingQuery {
    */
   private Collection<TimeRange> internalQuery(Collection<Event> events, MeetingRequest request, boolean optimalQuery) {
     // Create set of required attendees
-    Collection<String> reqAttendees = request.getAttendees();
-    Set<String> reqAttendeesSet = new HashSet<String>(reqAttendees);
+    Collection<String> requiredAttendees = request.getAttendees();
+    Set<String> requiredAttendeesSet = new HashSet<String>(requiredAttendees);
 
     // Create set of optional attendees
-    Collection<String> optAttendees = request.getOptionalAttendees();
-    Set<String> optAttendeesSet = new HashSet<String>(optAttendees);
+    Collection<String> optionalAttendees = request.getOptionalAttendees();
+    Set<String> optionalAttendeesSet = new HashSet<String>(optionalAttendees);
 
     // Create a set of required + optional attendees (union of both sets)
-    Set<String> comboAttendees = Sets.union(reqAttendeesSet, optAttendeesSet);
+    Set<String> comboAttendees = Sets.union(requiredAttendeesSet, optionalAttendeesSet);
 
     // Find open times for all optional + requiered attendes 
-    Pair<List<TimeRange>, Boolean> comboOpen = checkCompatibility(events, request, comboAttendees); 
+    PreparedTimeRange comboOpen = checkCompatibility(events, request, comboAttendees); 
     // if required is empty and it is an optimal query want to maximize optional attendees
-    Boolean ignoreRequired = reqAttendees.isEmpty() && !optimalQuery;
+    Boolean ignoreRequired = requiredAttendees.isEmpty() && !optimalQuery;
     // if optional or required is empty -> we have the open times for the other (both can be empty)
-    if (ignoreRequired || optAttendees.isEmpty() || comboOpen.getValue1()) { 
-        return comboOpen.getValue0(); 
+    if (ignoreRequired || optionalAttendees.isEmpty() || comboOpen.checkOpenTimes()) { 
+        return comboOpen.getOpenTimes(); 
     }    
 
     // Find open times for all required attendees
     List<TimeRange> reqOpenTimes = new ArrayList<TimeRange>();
-    if (!reqAttendees.isEmpty()) {
-        reqOpenTimes = checkCompatibility(events, request, reqAttendeesSet).getValue0();
+    if (!requiredAttendees.isEmpty()) {
+        reqOpenTimes = checkCompatibility(events, request, requiredAttendeesSet).getOpenTimes();
     }
 
     // Either return current results or run the optimized version to maximize optional attendees
@@ -105,11 +105,11 @@ public final class FindMeetingQuery {
     Set<String> ignoreAttendees = new HashSet<String>();
 
     // StaticInfo is used to pass info that doesn't change through the recursive function
-    StaticRecInfo staticInfo = new StaticRecInfo(events, request); 
+    StaticRecursiveInfo staticInfo = new StaticRecursiveInfo(events, request); 
 
     // Generate subsets of optional Attendees of increasing size (one below all b/c that was already tested)
-    for (int i = 1 ; i < staticInfo.getOptAttendees().size(); i++) {
-        Triplet<Boolean, Integer, List<TimeRange>> optimalCandidate = recOptimalQueryHelper(ignoreAttendees, staticInfo, i);
+    for (int i = 1 ; i < staticInfo.getoptionalAttendees().size(); i++) {
+        Triplet<Boolean, Integer, List<TimeRange>> optimalCandidate = callRecursiveOptimalQuery(ignoreAttendees, staticInfo, i);
         if (optimalCandidate.getValue0()) {
             optimalSchedule = optimalCandidate.getValue2();
         } else if (i != 1) { // if i == 1 then no open times with optional attendees was found
@@ -122,15 +122,15 @@ public final class FindMeetingQuery {
   }
 
   /**
-   * Helper function to call recOptimalQuery (fills in fixed inputs)
+   * Helper function to call recursiveOptimalQuery (fills in fixed inputs)
    *
    * @param ignoreAttendees If no open times are found for an attendee or group of attendee we ignore them
    * @param staticInfo      Contains all the information that doesn't change throughout recursive calls 
    * @param numAttendees    The size of the subset of optional attendees
    */
-  private Triplet<Boolean, Integer, List<TimeRange>> recOptimalQueryHelper(Set<String> ignoreAttendees, StaticRecInfo staticInfo, Integer numAttendees) {
+  private Triplet<Boolean, Integer, List<TimeRange>> callRecursiveOptimalQuery(Set<String> ignoreAttendees, StaticRecursiveInfo staticInfo, Integer numAttendees) {
       List<String> chosenAttendees = new ArrayList<String>();
-      return recOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, 0, 0);
+      return recursiveOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, 0, 0);
   }
 
   /**
@@ -144,37 +144,37 @@ public final class FindMeetingQuery {
    * @param attendeeIndex   Index in array of optional attendees (found within the StaticInfo object)
    * @param chosenIndex     Index in array of chosen attendees
    */
-  private Triplet<Boolean, Integer, List<TimeRange>> recOptimalQuery(Set<String> ignoreAttendees, StaticRecInfo staticInfo, Integer numAttendees, List<String> chosenAttendees, Integer attendeeIndex, Integer chosenIndex) {
+  private Triplet<Boolean, Integer, List<TimeRange>> recursiveOptimalQuery(Set<String> ignoreAttendees, StaticRecursiveInfo staticInfo, Integer numAttendees, List<String> chosenAttendees, Integer attendeeIndex, Integer chosenIndex) {
       // Subset is of size numAttendees (Base Case)
       if (chosenIndex == numAttendees) {
         // Prepare and union sets to create set of all required attendees and optional attendees in current subset
-        Set<String> reqAttendeesSet = new HashSet<String>(staticInfo.getReqAttendees());
-        Set<String> optAttendeesSet = new HashSet<String>(chosenAttendees);
-        Set<String> comboAttendees = Sets.union(reqAttendeesSet, optAttendeesSet);
+        Set<String> requiredAttendeesSet = new HashSet<String>(staticInfo.getrequiredAttendees());
+        Set<String> optionalAttendeesSet = new HashSet<String>(chosenAttendees);
+        Set<String> comboAttendees = Sets.union(requiredAttendeesSet, optionalAttendeesSet);
 
         // Skip call to checkCompatibility() if one of the attendees is in the ignoreAttendees set
-        Pair<List<TimeRange>, Boolean> openTimes;
-        if (!Sets.intersection(ignoreAttendees, optAttendeesSet).isEmpty()) {
-            openTimes = Pair.with(new ArrayList<TimeRange>(), false);
+        PreparedTimeRange openTimes;
+        if (!Sets.intersection(ignoreAttendees, optionalAttendeesSet).isEmpty()) {
+            openTimes = new PreparedTimeRange(new ArrayList<TimeRange>());
         } else {
             openTimes = checkCompatibility(staticInfo.getEvents(), staticInfo.getRequest(), comboAttendees);
         }
         
-        if(openTimes.getValue1()) {
-            return Triplet.with(true, getDuration(openTimes.getValue0()) , openTimes.getValue0());
+        if(openTimes.checkOpenTimes()) {
+            return Triplet.with(true, getDuration(openTimes.getOpenTimes()) , openTimes.getOpenTimes());
         } else {
-            ignoreAttendees.addAll(optAttendeesSet); // no open times -> ignore this set of optional attendees
-            return Triplet.with(false, 0, openTimes.getValue0());
+            ignoreAttendees.addAll(optionalAttendeesSet); // no open times -> ignore this set of optional attendees
+            return Triplet.with(false, 0, openTimes.getOpenTimes());
         }
       }
 
       // Have no more optional attendees (Base Case)
-      if (attendeeIndex == staticInfo.getOptAttendees().size()) {
+      if (attendeeIndex == staticInfo.getoptionalAttendees().size()) {
           return Triplet.with(false, 0, new ArrayList<TimeRange>());
       }
 
       // Update chosenAttendees -> either add element or overwrite previous element
-      String curAttendee = staticInfo.getOptAttendees().get(attendeeIndex);
+      String curAttendee = staticInfo.getoptionalAttendees().get(attendeeIndex);
       if (chosenIndex == chosenAttendees.size()) {
           chosenAttendees.add(curAttendee);
       } else {
@@ -182,10 +182,10 @@ public final class FindMeetingQuery {
       } 
 
       // Resulting open times if we include curAttendee in the subset 
-      Triplet<Boolean, Integer, List<TimeRange>> keep = recOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, attendeeIndex + 1, chosenIndex + 1);
+      Triplet<Boolean, Integer, List<TimeRange>> keep = recursiveOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, attendeeIndex + 1, chosenIndex + 1);
 
       // Resulting open times if we ignore cureAttendee in the subset
-      Triplet<Boolean, Integer, List<TimeRange>> skip = recOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, attendeeIndex + 1, chosenIndex);
+      Triplet<Boolean, Integer, List<TimeRange>> skip = recursiveOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, attendeeIndex + 1, chosenIndex);
 
       // If both keep and skip have open times -> choose the one with larger duration of open time
       if (keep.getValue0() && skip.getValue0()) {
@@ -217,7 +217,7 @@ public final class FindMeetingQuery {
    * @param request         The MeetingRequest for the meeting to be schedules
    * @param attendees       Set of attendees to be considered when searching for open times
    */
-  private Pair<List<TimeRange>, Boolean> checkCompatibility(Collection<Event> events, MeetingRequest request, Set<String> attendees) {
+  private PreparedTimeRange checkCompatibility(Collection<Event> events, MeetingRequest request, Set<String> attendees) {
         // Given set of attendees -> filter to include only relevant events
         List<Event> filteredEvents = new ArrayList<Event>();
         filteredEvents.add(startOfDay);
@@ -230,7 +230,7 @@ public final class FindMeetingQuery {
         List<TimeRange> openTimes = findOpenTimes(filteredEvents, neededDif);
 
         // Return pair of open times and whether or not there are any
-        return Pair.with(openTimes, !openTimes.isEmpty());
+        return new PreparedTimeRange(openTimes);
   }
 
   /**
@@ -250,7 +250,7 @@ public final class FindMeetingQuery {
     for (int i = 0; i < numEvents - 1; i++) {
         // Generate a new event for the second event taking into account overlap compensation (look at function for more info)
         String title = filteredEvents.get(i + 1).getTitle();
-        TimeRange compensatedTimeRange = overlapCompensation(filteredEvents.get(i).getWhen(), filteredEvents.get(i+1).getWhen());
+        TimeRange compensatedTimeRange = compensateOverlap(filteredEvents.get(i).getWhen(), filteredEvents.get(i+1).getWhen());
         Collection attendees = filteredEvents.get(i + 1).getAttendees();
         Event newTiming2 = new Event(title, compensatedTimeRange, attendees);
 
@@ -271,14 +271,14 @@ public final class FindMeetingQuery {
    */
   private List<Event> filterEvents(Collection<Event> events, Collection<String> attendees) {
       List<Event> filteredEvents = new ArrayList<Event>();
-      Set<String> reqAttendees = new HashSet<String>(attendees);
+      Set<String> requiredAttendees = new HashSet<String>(attendees);
 
       // Check if any attendee of interested attended given event -> if so add to filtered events
       for (Event event : events) {
         Set<String> eventAttendees = event.getAttendees();
-        Set<String> intersection = Sets.intersection(eventAttendees, reqAttendees);
+        Set<String> intersection = Sets.intersection(eventAttendees, requiredAttendees);
 
-        if (containsReqAttendees(intersection)) { filteredEvents.add(event); }
+        if (containsRequiredAttendees(intersection)) { filteredEvents.add(event); }
       }
 
       return filteredEvents;
@@ -289,7 +289,7 @@ public final class FindMeetingQuery {
    *
    * @param intersection    Intersection of attendees of interest and Event's attendees
    */
-  private boolean containsReqAttendees(Set<String> intersection) {
+  private boolean containsRequiredAttendees(Set<String> intersection) {
       return intersection.size() > 0;
   }
 
@@ -328,7 +328,7 @@ public final class FindMeetingQuery {
    * @param timing2     The TimeRange of the second event
    * 
    */
-  private TimeRange overlapCompensation(TimeRange timing1, TimeRange timing2) {
+  private TimeRange compensateOverlap(TimeRange timing1, TimeRange timing2) {
       return timing1.contains(timing2) ? TimeRange.fromStartEnd(timing2.start(), timing1.end(), false) : timing2;
   }
 }
