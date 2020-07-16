@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.Arrays;
 import com.google.common.collect.Sets; 
 import java.io.*;
-import org.javatuples.Pair;
 import org.javatuples.Triplet;
 
 public final class FindMeetingQuery {
@@ -34,6 +33,12 @@ public final class FindMeetingQuery {
   private final Event startOfDay = new Event("START", TimeRange.fromStartDuration(TimeRange.START_OF_DAY, 0), attendeesHolder); 
   private final Event endOfDay = new Event ("END", TimeRange.fromStartDuration(TimeRange.END_OF_DAY + 1, 0), attendeesHolder);
 
+  // Define enum for type of query
+  private enum QueryType {
+      STANDARD, // The standard query attempts to book all required and all optional attendees (if not all optional then just required)
+      OPTIMAL, // The optimized query performs a standard query but then attempts to maximize number of optional and all required 
+  }
+
   /**
    * Helper function to run a standard query (time slots for all req and optional if possible)
    *
@@ -41,7 +46,7 @@ public final class FindMeetingQuery {
    * @param request The MeetingRequest for the meeting to be schedules
    */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-      return internalQuery(events, request, false);
+      return internalQuery(events, request, QueryType.STANDARD);
   }
 
   /**
@@ -51,7 +56,7 @@ public final class FindMeetingQuery {
    * @param request The MeetingRequest for the meeting to be schedules
    */
   public Collection<TimeRange> optimalQuery(Collection<Event> events, MeetingRequest request) {
-      return internalQuery(events, request, true);
+      return internalQuery(events, request, QueryType.OPTIMAL);
   }
 
   /**
@@ -61,7 +66,7 @@ public final class FindMeetingQuery {
    * @param request         The MeetingRequest for the meeting to be schedules
    * @param optimalQuery    Determines whether it is a standard or optimal query 
    */
-  private Collection<TimeRange> internalQuery(Collection<Event> events, MeetingRequest request, boolean optimalQuery) {
+  private Collection<TimeRange> internalQuery(Collection<Event> events, MeetingRequest request, QueryType type) {
     // Create set of required attendees
     Collection<String> requiredAttendees = request.getAttendees();
     Set<String> requiredAttendeesSet = new HashSet<String>(requiredAttendees);
@@ -74,9 +79,9 @@ public final class FindMeetingQuery {
     Set<String> comboAttendees = Sets.union(requiredAttendeesSet, optionalAttendeesSet);
 
     // Find open times for all optional + requiered attendes 
-    PreparedTimeRange comboOpen = checkCompatibility(events, request, comboAttendees); 
+    PreparedTimeRanges comboOpen = checkCompatibility(events, request, comboAttendees); 
     // if required is empty and it is an optimal query want to maximize optional attendees
-    Boolean ignoreRequired = requiredAttendees.isEmpty() && !optimalQuery;
+    Boolean ignoreRequired = requiredAttendees.isEmpty() && !(type == QueryType.OPTIMAL);
     // if optional or required is empty -> we have the open times for the other (both can be empty)
     if (ignoreRequired || optionalAttendees.isEmpty() || comboOpen.checkOpenTimes()) { 
         return comboOpen.getOpenTimes(); 
@@ -89,7 +94,7 @@ public final class FindMeetingQuery {
     }
 
     // Either return current results or run the optimized version to maximize optional attendees
-    return optimalQuery ? optimalQueryHelper(events, request, reqOpenTimes) : reqOpenTimes; 
+    return type == QueryType.OPTIMAL ? optimalQueryHelper(events, request, reqOpenTimes) : reqOpenTimes; 
   }
 
   /**
@@ -109,9 +114,9 @@ public final class FindMeetingQuery {
 
     // Generate subsets of optional Attendees of increasing size (one below all b/c that was already tested)
     for (int i = 1 ; i < staticInfo.getoptionalAttendees().size(); i++) {
-        Triplet<Boolean, Integer, List<TimeRange>> optimalCandidate = callRecursiveOptimalQuery(ignoreAttendees, staticInfo, i);
-        if (optimalCandidate.getValue0()) {
-            optimalSchedule = optimalCandidate.getValue2();
+        OptimizedTimeRanges optimalCandidate = callRecursiveOptimalQuery(ignoreAttendees, staticInfo, i);
+        if (optimalCandidate.checkOpenTimes()) {
+            optimalSchedule = optimalCandidate.getOpenTimes();
         } else if (i != 1) { // if i == 1 then no open times with optional attendees was found
             return optimalSchedule;
         } else {
@@ -128,7 +133,7 @@ public final class FindMeetingQuery {
    * @param staticInfo      Contains all the information that doesn't change throughout recursive calls 
    * @param numAttendees    The size of the subset of optional attendees
    */
-  private Triplet<Boolean, Integer, List<TimeRange>> callRecursiveOptimalQuery(Set<String> ignoreAttendees, StaticRecursiveInfo staticInfo, Integer numAttendees) {
+  private OptimizedTimeRanges callRecursiveOptimalQuery(Set<String> ignoreAttendees, StaticRecursiveInfo staticInfo, Integer numAttendees) {
       List<String> chosenAttendees = new ArrayList<String>();
       return recursiveOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, 0, 0);
   }
@@ -144,7 +149,7 @@ public final class FindMeetingQuery {
    * @param attendeeIndex   Index in array of optional attendees (found within the StaticInfo object)
    * @param chosenIndex     Index in array of chosen attendees
    */
-  private Triplet<Boolean, Integer, List<TimeRange>> recursiveOptimalQuery(Set<String> ignoreAttendees, StaticRecursiveInfo staticInfo, Integer numAttendees, List<String> chosenAttendees, Integer attendeeIndex, Integer chosenIndex) {
+  private OptimizedTimeRanges recursiveOptimalQuery(Set<String> ignoreAttendees, StaticRecursiveInfo staticInfo, Integer numAttendees, List<String> chosenAttendees, Integer attendeeIndex, Integer chosenIndex) {
       // Subset is of size numAttendees (Base Case)
       if (chosenIndex == numAttendees) {
         // Prepare and union sets to create set of all required attendees and optional attendees in current subset
@@ -153,24 +158,19 @@ public final class FindMeetingQuery {
         Set<String> comboAttendees = Sets.union(requiredAttendeesSet, optionalAttendeesSet);
 
         // Skip call to checkCompatibility() if one of the attendees is in the ignoreAttendees set
-        PreparedTimeRange openTimes;
+        List<TimeRange> openTimes;
         if (!Sets.intersection(ignoreAttendees, optionalAttendeesSet).isEmpty()) {
-            openTimes = new PreparedTimeRange(new ArrayList<TimeRange>());
+            openTimes = new ArrayList<TimeRange>();
         } else {
-            openTimes = checkCompatibility(staticInfo.getEvents(), staticInfo.getRequest(), comboAttendees);
+            openTimes = checkCompatibility(staticInfo.getEvents(), staticInfo.getRequest(), comboAttendees).getOpenTimes();
         }
         
-        if(openTimes.checkOpenTimes()) {
-            return Triplet.with(true, getDuration(openTimes.getOpenTimes()) , openTimes.getOpenTimes());
-        } else {
-            ignoreAttendees.addAll(optionalAttendeesSet); // no open times -> ignore this set of optional attendees
-            return Triplet.with(false, 0, openTimes.getOpenTimes());
-        }
+        return new OptimizedTimeRanges(openTimes);
       }
 
       // Have no more optional attendees (Base Case)
       if (attendeeIndex == staticInfo.getoptionalAttendees().size()) {
-          return Triplet.with(false, 0, new ArrayList<TimeRange>());
+          return new OptimizedTimeRanges(new ArrayList<TimeRange>());
       }
 
       // Update chosenAttendees -> either add element or overwrite previous element
@@ -182,32 +182,19 @@ public final class FindMeetingQuery {
       } 
 
       // Resulting open times if we include curAttendee in the subset 
-      Triplet<Boolean, Integer, List<TimeRange>> keep = recursiveOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, attendeeIndex + 1, chosenIndex + 1);
+      OptimizedTimeRanges keep = recursiveOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, attendeeIndex + 1, chosenIndex + 1);
 
       // Resulting open times if we ignore cureAttendee in the subset
-      Triplet<Boolean, Integer, List<TimeRange>> skip = recursiveOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, attendeeIndex + 1, chosenIndex);
+      OptimizedTimeRanges skip = recursiveOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, attendeeIndex + 1, chosenIndex);
 
       // If both keep and skip have open times -> choose the one with larger duration of open time
-      if (keep.getValue0() && skip.getValue0()) {
-          return keep.getValue1() > skip.getValue1() ? keep : skip;
-      } else if (keep.getValue0()) {
+      if (keep.checkOpenTimes() && skip.checkOpenTimes()) {
+          return keep.getTotalDuration() > skip.getTotalDuration() ? keep : skip;
+      } else if (keep.checkOpenTimes()) {
           return keep;
       } else {
           return skip;
       }
-  }
-  
-  /**
-   * Calculates the duration of all the open time slots combines
-   *
-   * @param openTimes   List of TimeRange objects that represent open times
-   */
-  private Integer getDuration(List<TimeRange> openTimes) {
-      Integer result = 0;
-      for (TimeRange slot : openTimes) {
-          result += slot.duration();
-      }
-      return result;
   }
 
   /**
@@ -217,7 +204,7 @@ public final class FindMeetingQuery {
    * @param request         The MeetingRequest for the meeting to be schedules
    * @param attendees       Set of attendees to be considered when searching for open times
    */
-  private PreparedTimeRange checkCompatibility(Collection<Event> events, MeetingRequest request, Set<String> attendees) {
+  private PreparedTimeRanges checkCompatibility(Collection<Event> events, MeetingRequest request, Set<String> attendees) {
         // Given set of attendees -> filter to include only relevant events
         List<Event> filteredEvents = new ArrayList<Event>();
         filteredEvents.add(startOfDay);
@@ -230,7 +217,7 @@ public final class FindMeetingQuery {
         List<TimeRange> openTimes = findOpenTimes(filteredEvents, neededDif);
 
         // Return pair of open times and whether or not there are any
-        return new PreparedTimeRange(openTimes);
+        return new PreparedTimeRanges(openTimes);
   }
 
   /**
@@ -256,8 +243,8 @@ public final class FindMeetingQuery {
 
         // Update second event, calculate difference, then include if open slot is long enough
         filteredEvents.set(i + 1, newTiming2); 
-        Pair<TimeRange, Boolean> dif = calculateEventDif(filteredEvents.get(i).getWhen(), filteredEvents.get(i+1).getWhen(), neededDif);
-        if (dif.getValue1()) { openTimes.add(dif.getValue0()); }
+        ValidOpenTimeRange dif = calculateEventDif(filteredEvents.get(i).getWhen(), filteredEvents.get(i+1).getWhen(), neededDif);
+        if (dif.checkDuration()) { openTimes.add(dif.getOpenTime()); }
     }
 
     return openTimes;
@@ -302,16 +289,16 @@ public final class FindMeetingQuery {
    * @param neededDif   The time gap necessary to schedule the request
    * 
    */
-  private Pair<TimeRange, Boolean> calculateEventDif(TimeRange timing1, TimeRange timing2, long neededDif) {
+  private ValidOpenTimeRange calculateEventDif(TimeRange timing1, TimeRange timing2, long neededDif) {
       // Check for overlap btw ranges -> no time in between
       if (timing1.overlaps(timing2)) {
-          return Pair.with(TimeRange.fromStartDuration(0,0), false);
+          return new ValidOpenTimeRange(TimeRange.fromStartDuration(0,0), false);
       }
 
       // Return TimeRange of difference between events 
       int eventDif = timing2.start() - timing1.end();
       TimeRange betweenEvents = TimeRange.fromStartDuration(timing1.end(), eventDif);
-      return Pair.with(betweenEvents, eventDif >= neededDif);
+      return new ValidOpenTimeRange(betweenEvents, eventDif >= neededDif); 
   }
 
   /**
