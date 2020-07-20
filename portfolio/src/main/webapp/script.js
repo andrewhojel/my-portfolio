@@ -70,11 +70,13 @@ function addRandomFact() {
  * Fills in the 'I am a' sentences with different phrases
  */
 function writeSnippets() {
-    if (charIdx == 0) document.getElementById('snippetsTarget').innerHTML = EMOJIS[phraseIdx] + ' I am ';
+    if (charIdx == 0) {
+        document.getElementById('snippetsTarget').textContent = EMOJIS[phraseIdx] + ' I am ';
+    }
 
 	// Use typing effect to print PHRASE[phraseIdx]
 	if (charIdx < PHRASES[phraseIdx].length) {
-        document.getElementById('snippetsTarget').innerHTML += PHRASES[phraseIdx].charAt(charIdx);
+        document.getElementById('snippetsTarget').textContent += PHRASES[phraseIdx].charAt(charIdx);
 		charIdx++;
 		setTimeout(writeSnippets, RATE);
 	} else { // Go to next phrase after entire phrase has been printer
