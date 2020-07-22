@@ -70,18 +70,18 @@ function addRandomFact() {
  * Fills in the 'I am a' sentences with different phrases
  */
 function writeSnippets() {
-    if (charIdx == 0) {
-        document.getElementById('snippetsTarget').textContent = EMOJIS[phraseIdx] + ' I am ';
-    }
+	if (charIdx == 0) {
+		document.getElementById('snippetsTarget').textContent = EMOJIS[phraseIdx] + ' I am ';
+	}
 
 	// Use typing effect to print PHRASE[phraseIdx]
 	if (charIdx < PHRASES[phraseIdx].length) {
-        document.getElementById('snippetsTarget').textContent += PHRASES[phraseIdx].charAt(charIdx);
+		document.getElementById('snippetsTarget').textContent += PHRASES[phraseIdx].charAt(charIdx);
 		charIdx++;
 		setTimeout(writeSnippets, RATE);
 	} else { // Go to next phrase after entire phrase has been printer
 		charIdx = 0;
-        (phraseIdx + 1) < PHRASES.length ? phraseIdx++ : phraseIdx = 0;
+		(phraseIdx + 1) < PHRASES.length ? phraseIdx++ : phraseIdx = 0;
 		setTimeout(writeSnippets, PAUSE);
 	}
 }
@@ -135,7 +135,7 @@ async function changeName() {
     params.append('nickname', nickname);
     let response = await fetch('/auth', {method: 'POST', body: params});
     if (!response.ok) {
-        alert('HTTP-Error: ' + response.status);
+    	alert('HTTP-Error: ' + response.status);
     } 
     
     // Reload the page to update User JSON 
@@ -160,15 +160,15 @@ async function getComments() {
     const response = await fetch('/data' + queryString);
     if (!response.ok) {
         alert('HTTP-Error: ' + response.status);
-        return;
+		return;
     } 
 
-    const comments = await response.json();
+	const comments = await response.json();
 
     // Display the comments
-    comments.forEach((comment) => {
-        commentsEl.appendChild(createCommentElement(comment));
-    });
+	comments.forEach((comment) => {
+		commentsEl.appendChild(createCommentElement(comment));
+	});
 }
 
 /**
