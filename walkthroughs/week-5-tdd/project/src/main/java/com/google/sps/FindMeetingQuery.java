@@ -82,7 +82,7 @@ public final class FindMeetingQuery {
     PreparedTimeRanges comboOpen = checkCompatibility(events, request, comboAttendees); 
     // if required is empty and it is an optimal query want to maximize optional attendees
     Boolean ignoreRequired = requiredAttendees.isEmpty() && !(type == QueryType.OPTIMAL);
-    // if optional or required is empty -> we have the open times for the other (both can be empty)
+    // if optional or required is empty then we have the open times for the other (both can be empty)
     if (ignoreRequired || optionalAttendees.isEmpty() || comboOpen.checkOpenTimes()) { 
         return comboOpen.getOpenTimes(); 
     }    
@@ -173,7 +173,7 @@ public final class FindMeetingQuery {
           return new OptimizedTimeRanges(new ArrayList<TimeRange>());
       }
 
-      // Update chosenAttendees -> either add element or overwrite previous element
+      // Update chosenAttendees by either adding an element or overwriting a previous element
       String curAttendee = staticInfo.getoptionalAttendees().get(attendeeIndex);
       if (chosenIndex == chosenAttendees.size()) {
           chosenAttendees.add(curAttendee);
@@ -187,7 +187,7 @@ public final class FindMeetingQuery {
       // Resulting open times if we ignore cureAttendee in the subset
       OptimizedTimeRanges skip = recursiveOptimalQuery(ignoreAttendees, staticInfo, numAttendees, chosenAttendees, attendeeIndex + 1, chosenIndex);
 
-      // If both keep and skip have open times -> choose the one with larger duration of open time
+      // If both keep and skip have open times then we choose the one with larger duration of open time
       if (keep.checkOpenTimes() && skip.checkOpenTimes()) {
           return keep.getTotalDuration() > skip.getTotalDuration() ? keep : skip;
       } else if (keep.checkOpenTimes()) {
@@ -205,7 +205,7 @@ public final class FindMeetingQuery {
    * @param attendees       Set of attendees to be considered when searching for open times
    */
   private PreparedTimeRanges checkCompatibility(Collection<Event> events, MeetingRequest request, Set<String> attendees) {
-        // Given set of attendees -> filter to include only relevant events
+        // Given set of attendees, filter a set of events to include only relevant events
         List<Event> filteredEvents = new ArrayList<Event>();
         filteredEvents.add(startOfDay);
         filteredEvents.addAll(filterEvents(events, attendees));
@@ -260,7 +260,7 @@ public final class FindMeetingQuery {
       List<Event> filteredEvents = new ArrayList<Event>();
       Set<String> requiredAttendees = new HashSet<String>(attendees);
 
-      // Check if any attendee of interested attended given event -> if so add to filtered events
+      // Check if any attendee of interested attended given event (if so add to filtered events)
       for (Event event : events) {
         Set<String> eventAttendees = event.getAttendees();
         Set<String> intersection = Sets.intersection(eventAttendees, requiredAttendees);
@@ -290,7 +290,7 @@ public final class FindMeetingQuery {
    * 
    */
   private ValidOpenTimeRange calculateEventDif(TimeRange timing1, TimeRange timing2, long neededDif) {
-      // Check for overlap btw ranges -> no time in between
+      // Check for overlap between ranges (which would mean there is no time in between)
       if (timing1.overlaps(timing2)) {
           return new ValidOpenTimeRange(TimeRange.fromStartDuration(0,0), false);
       }

@@ -68,6 +68,9 @@ function addRandomFact() {
 
 /**
  * Fills in the 'I am a' sentences with different phrases
+ *
+ * setTimeout is used to create the pause between each letter being typed
+ * (creates the typing effect)
  */
 function writeSnippets() {
 	if (charIdx == 0) {
