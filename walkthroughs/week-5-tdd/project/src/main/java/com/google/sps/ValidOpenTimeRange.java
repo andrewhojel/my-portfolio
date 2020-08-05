@@ -22,7 +22,7 @@ import java.util.List;
  */
 public final class ValidOpenTimeRange {
   private final TimeRange openTime;
-  private final Boolean longEnough;
+  private final boolean longEnough;
 
   /**
    * Constructs a valid open time range object
@@ -30,7 +30,7 @@ public final class ValidOpenTimeRange {
    * @param openTime    A single time range (potential open slot)
    * @param longEnough  Whether the duration of the time range meets meeting request requirements
    */
-  public ValidOpenTimeRange(TimeRange openTime, Boolean longEnough) {
+  public ValidOpenTimeRange(TimeRange openTime, boolean longEnough) {
       this.openTime = openTime;
       this.longEnough =longEnough;
   }
@@ -45,7 +45,7 @@ public final class ValidOpenTimeRange {
   /**
    * Getter function for containsOpenTimes
    */
-  public Boolean checkDuration() {
+  public boolean checkDuration() {
       return longEnough;
   }
 }

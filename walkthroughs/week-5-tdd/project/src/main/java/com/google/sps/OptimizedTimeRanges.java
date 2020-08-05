@@ -23,7 +23,7 @@ import java.util.List;
  */
 public final class OptimizedTimeRanges {
   private final List<TimeRange> openTimes;
-  private final Boolean containsOpenTimes;
+  private final boolean containsOpenTimes;
   private final Integer totalDuration;
 
   /**
@@ -47,7 +47,7 @@ public final class OptimizedTimeRanges {
   /**
    * Getter function for containsOpenTimes
    */
-  public Boolean checkOpenTimes() {
+  public boolean checkOpenTimes() {
       return containsOpenTimes;
   }
 

@@ -80,9 +80,9 @@ public final class FindMeetingQuery {
 
     // Find open times for all optional + requiered attendes 
     PreparedTimeRanges comboOpen = checkCompatibility(events, request, comboAttendees); 
-    // if required is empty and it is an optimal query want to maximize optional attendees
-    Boolean ignoreRequired = requiredAttendees.isEmpty() && !(type == QueryType.OPTIMAL);
-    // if optional or required is empty then we have the open times for the other (both can be empty)
+    // If required is empty and it is an optimal query want to maximize optional attendees
+    boolean ignoreRequired = requiredAttendees.isEmpty() && !(type == QueryType.OPTIMAL);
+    // If optional or required is empty then we have the open times for the other (both can be empty)
     if (ignoreRequired || optionalAttendees.isEmpty() || comboOpen.checkOpenTimes()) { 
         return comboOpen.getOpenTimes(); 
     }    
