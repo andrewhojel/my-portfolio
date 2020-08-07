@@ -1,13 +1,12 @@
 /* Styling for the labels of the sorting options for comments */
 .sort_label {
-    margin-top: 50px;
+  margin-top: 50px;
 }
 
 /* Style for image for images for each marker */
 .marker_image {
-    width: 75px;
+  width: 75px;
 }
-
 
 /* Style for map (imported from API) */
 #map {
@@ -21,250 +20,249 @@
 
 /* Style for comment form */
 .comment_form {
-    margin-top: 16px;
+  margin-top: 16px;
 }
 
 /* Styles links throughout the website */
 .link {
-    color: black;
-    font-family: 'Roboto Mono', monospace;
-    text-decoration: none;
-    border: 1px solid black;
-    padding: 1px 6px;
+  color: black;
+  font-family: "Roboto Mono", monospace;
+  text-decoration: none;
+  border: 1px solid black;
+  padding: 1px 6px;
 }
 
 /* Style for div holding sorting options for comments */
 .sort_div {
-    padding-top: 10px;
+  padding-top: 10px;
 }
 
 /* Style the select structure */
 select {
-    padding: 3px;
-    font-family: 'Roboto Mono', monospace; 
+  padding: 3px;
+  font-family: "Roboto Mono", monospace;
 }
 
 /* Styling for delete all comments button */
 .delete_all {
-    color: white;
-    background-color: #d9534f;
-    border-color: none;
-    margin-left: 15px;
+  color: white;
+  background-color: #d9534f;
+  border-color: none;
+  margin-left: 15px;
 }
 
 /* Styling for delete individual comments button */
 .delete_one {
-    background-color: white;
-    color: #d9534f;
-    border-color: #d43f3a;
-    float: right;
+  background-color: white;
+  color: #d9534f;
+  border-color: #d43f3a;
+  float: right;
 }
 
 /* Break between commenter name and the content */
 .comment_break {
-    margin: 10px;
+  margin: 10px;
 }
 
 /* Styling for button in comment */
-.comment_button { 
-    padding: 1px 4.2px;
-    text-align: center;
-    vertical-align: middle;
-    border: 1px solid transparent;
-    font-size: 14px;
-    border-radius: 4px;
-    font-family: 'Roboto Mono', monospace; 
-    float: right;
+.comment_button {
+  padding: 1px 4.2px;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  font-size: 14px;
+  border-radius: 4px;
+  font-family: "Roboto Mono", monospace;
+  float: right;
 }
 
 /* Styling for list of comments */
 #comment_list {
-    list-style-type: none;
-    padding-left: 0px;
+  list-style-type: none;
+  padding-left: 0px;
 }
 
 /* Styling for each individual comment */
 .comment {
-    border: thin solid black;
-    display: block;
-    margin: 10px;
-    padding: 10px;
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
+  border: thin solid black;
+  display: block;
+  margin: 10px;
+  padding: 10px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Styling for comment title */
 .comment_title {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 /* Style hr divider */
 hr {
-    border-top: 1px solid #EEEEEE;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    width: 100%;
+  border-top: 1px solid #eeeeee;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  width: 100%;
 }
 
 /* Style form submit button */
-input[type=submit] {
-    font-family: 'Roboto Mono', monospace; 
-    background-color: white;
-    font-size: 16px;
-    border: 1px solid black;
-    margin-top: 10px;
+input[type="submit"] {
+  font-family: "Roboto Mono", monospace;
+  background-color: white;
+  font-size: 16px;
+  border: 1px solid black;
+  margin-top: 10px;
 }
 
 /* Style form submit button when hovered over */
-.link:hover, 
-input[type=submit]:hover {
-    font-family: 'Roboto Mono', monospace; 
-    background-color: white;
-    border: 2px solid black;
+.link:hover,
+input[type="submit"]:hover {
+  font-family: "Roboto Mono", monospace;
+  background-color: white;
+  border: 2px solid black;
 }
 
 /* Style text input box */
-input[type=text] {
-    width: 100%;
-    font-family: 'Roboto Mono', monospace; 
+input[type="text"] {
+  width: 100%;
+  font-family: "Roboto Mono", monospace;
 }
 
 /* Style comment box */
 textarea {
-    width:100%;
-    font-family: 'Roboto Mono', monospace; 
+  width: 100%;
+  font-family: "Roboto Mono", monospace;
 }
 
 /* Style the tab */
 .tab {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 /* Style the buttons inside the tab */
 .tab button {
-    background-color: inherit;
-    font-size: 1.17em;
-    margin-left: 0;
-    margin-right: 0;
-    font-weight: bold;
-    float: left;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 0 10% 0 0;
-    transition: 0.3s;
-    font-family: 'Roboto Mono', monospace;
+  background-color: inherit;
+  font-size: 1.17em;
+  margin-left: 0;
+  margin-right: 0;
+  font-weight: bold;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0 10% 0 0;
+  transition: 0.3s;
+  font-family: "Roboto Mono", monospace;
 }
 
 /* Change background color of buttons on hover */
 .tab button:hover {
-    text-decoration:underline;
+  text-decoration: underline;
 }
 
 /* Create an active/current tablink class */
 .tab button.active {
-    text-decoration:underline;
+  text-decoration: underline;
 }
 
 /* Style the tab content */
 .tabcontent {
-    display: none;
+  display: none;
 }
 
 /* Style random facts container */
 #fact-container {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 /* Set website font */
-body { 
-    font-family: 'Roboto Mono', monospace; 
+body {
+  font-family: "Roboto Mono", monospace;
 }
 
-h2, 
+h2,
 h4 {
-    font-weight: normal;
+  font-weight: normal;
 }
 
 /* Style the profile picture*/
 #profile {
-    height: 250px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+  height: 250px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Style / formatting fixed footer */
 #footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    background-color: white;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background-color: white;
 }
 
 /* Ensures that all content is viewable */
 #footer_compensation {
-    height:75px;
-    background-color: white;
-    width: 100%;
+  height: 75px;
+  background-color: white;
+  width: 100%;
 }
 
 /* Style for social icons */
 .icon {
-    color: black;
-    padding: 25px 50px 25px;
+  color: black;
+  padding: 25px 50px 25px;
 }
 
 /* Style for entire webpage */
 #content {
-    margin-left: auto;
-    margin-right: auto;
-    width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 650px;
 }
 
 /* Style for experience headers */
 .experience_header {
-    margin-bottom: -0.5em;
+  margin-bottom: -0.5em;
 }
 
 /* Style / formatting for experience container */
 .experience {
-	padding: 10px 0 10px 0;
-	max-width: 650px;
-	
+  padding: 10px 0 10px 0;
+  max-width: 650px;
 }
 
 /* Style for image for each experience */
 .experience_image {
-    display: inline-block;
-    vertical-align: top;
-    width: 75px;
-    margin: 25px 25px 0 0;
+  display: inline-block;
+  vertical-align: top;
+  width: 75px;
+  margin: 25px 25px 0 0;
 }
 
 /* Style for text for each experience */
 .experience_text {
-    display: inline-block;
-    width: 525px;
+  display: inline-block;
+  width: 525px;
 }
 
 /* Make it scale on mobile :) */
 @media (max-width: 650px) {
-    .icon {
-        color: black;
-        padding: 25px 15px 25px;
-    }
-    #content {
-        width: 100%;
-    }
-    .experience_text {
-        width: 100%;
-    }
-    .experience_image {
-        margin: 0 auto;
-        width: 25%;
-    }
+  .icon {
+    color: black;
+    padding: 25px 15px 25px;
+  }
+  #content {
+    width: 100%;
+  }
+  .experience_text {
+    width: 100%;
+  }
+  .experience_image {
+    margin: 0 auto;
+    width: 25%;
+  }
 }

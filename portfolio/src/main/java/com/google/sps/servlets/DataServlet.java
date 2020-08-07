@@ -47,7 +47,7 @@ public class DataServlet extends HttpServlet {
   /**
    * Get comments from Database (correct number, sorting, & translation using query strings)
    * @param request     contains info on number of comments, sorting, & translation
-   * @param response    returns comment entities to the client 
+   * @param response    returns comment entities to the clients
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
